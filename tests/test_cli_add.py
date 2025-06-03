@@ -1,25 +1,47 @@
-import unittest
+import os
+import shutil
 import subprocess
-import sys
+import unittest
+
+GITMINI_DIR = '.gitmini'
 
 class TestAddCommand(unittest.TestCase):
+    # Clean up .gitmini before each test
+    def setUp(self):
+        if os.path.exists(GITMINI_DIR):
+            shutil.rmtree(GITMINI_DIR)
 
-    def test_cli_add_stub(self):
+    # Clean up .gitmini after each test
+    def tearDown(self):
+        if os.path.exists(GITMINI_DIR):
+            shutil.rmtree(GITMINI_DIR)
+
+    def test_cli_add_without_repo(self):
+        """ Test that 'gitmini add' fails when .gitmini is missing """
         result = subprocess.run(
-            [sys.executable, "-m", "gitmini", "add"],
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
+            ['python', '-m', 'gitmini', 'add'],
+            capture_output=True,
             text=True
         )
-        self.assertIn("Add not implemented yet", result.stdout)
+        self.assertIn("fatal: not a gitmini repository", result.stderr)
+
+    def test_cli_add_with_repo(self):
+        """ Test that 'gitmini add' finds the .gitmini root and prints success message """
+        subprocess.run(['python', '-m', 'gitmini', 'init'], capture_output=True, text=True)
+
+        result = subprocess.run(
+            ['python', '-m', 'gitmini', 'add'],
+            capture_output=True,
+            text=True
+        )
+        self.assertIn("Located .gitmini repo at:", result.stdout)
 
     def test_cli_add_help(self):
+        """ Test that 'gitmini add --help' displays the help message """
         result = subprocess.run(
-            [sys.executable, "-m", "gitmini", "add", "--help"],
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
+            ['python', '-m', 'gitmini', 'add', '--help'],
+            capture_output=True,
             text=True
         )
         self.assertIn("usage: gitmini add", result.stdout)
-        self.assertIn("Add specified files to GitMini's staging area", result.stdout)
-        self.assertIn("-h, --help", result.stdout)
+        self.assertIn("Add specified files to GitMini's staging area for the next commit.", result.stdout)

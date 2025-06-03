@@ -1,6 +1,8 @@
 import os
 
 def handle_init(args):
+    """Initializes a new GitMini repository."""
+    
     gitmini_dir = '.gitmini'
     subdirs = ['objects', 'logs']
     index_file = 'index'
