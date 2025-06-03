@@ -1,20 +1,10 @@
 import os
 import shutil
 import subprocess
-import unittest
+from tests.test_helpers import GitMiniTestCase, GITMINI_DIR
 
-GITMINI_DIR = '.gitmini'
 
-class TestAddCommand(unittest.TestCase):
-    # Clean up .gitmini before each test
-    def setUp(self):
-        if os.path.exists(GITMINI_DIR):
-            shutil.rmtree(GITMINI_DIR)
-
-    # Clean up .gitmini after each test
-    def tearDown(self):
-        if os.path.exists(GITMINI_DIR):
-            shutil.rmtree(GITMINI_DIR)
+class TestAddCommand(GitMiniTestCase):
 
     def test_cli_add_without_repo(self):
         """ Test that 'gitmini add' fails when .gitmini is missing """

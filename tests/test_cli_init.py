@@ -1,20 +1,10 @@
 import os
 import shutil
 import subprocess
-import unittest
+from tests.test_helpers import GitMiniTestCase, GITMINI_DIR
 
-GITMINI_DIR = '.gitmini'
 
-class TestInitCommand(unittest.TestCase):
-    # Clean up .gitmini before each test
-    def setUp(self):
-        if os.path.exists(GITMINI_DIR):
-            shutil.rmtree(GITMINI_DIR)
-
-    # Remove .gitmini after each test
-    def tearDown(self):
-        if os.path.exists(GITMINI_DIR):
-            shutil.rmtree(GITMINI_DIR)
+class TestInitCommand(GitMiniTestCase):
 
     def test_cli_init_stub(self):
         """ Test that 'gitmini init' initializes the correct folder structure and prints confirmation """

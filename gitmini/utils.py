@@ -3,7 +3,6 @@ import sys
 
 def find_gitmini_root():
     """Walks up from the current directory to locate the .gitmini directory."""
-    
     current_dir = os.getcwd()
     while True:
         potential_gitmini = os.path.join(current_dir, ".gitmini")
