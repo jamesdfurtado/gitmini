@@ -1,13 +1,19 @@
 import argparse
 
+from gitmini.commands.init import handle_init
+from gitmini.commands.add import handle_add
+from gitmini.commands.commit import handle_commit
+from gitmini.commands.log import handle_log
+from gitmini.commands.checkout import handle_checkout
+
 def main():
+    # Main entry point for the GitMini CLI
     parser = argparse.ArgumentParser(
         prog='gitmini',
         description='GitMini – A lightweight version control system'
     )
     subparsers = parser.add_subparsers(dest='command')
     parser.set_defaults(func=lambda args: parser.print_help())
-
 
     """ SUBCOMMANDS """
 
@@ -53,22 +59,3 @@ def main():
 
     args = parser.parse_args()
     args.func(args)
-
-
-
-""" COMMAND STUBS """
-
-def handle_init(args):
-    print('Init not implemented yet')
-
-def handle_add(args):
-    print('Add not implemented yet')
-
-def handle_commit(args):
-    print('Commit not implemented yet')
-
-def handle_log(args):
-    print('Log not implemented yet')
-
-def handle_checkout(args):
-    print('Checkout not implemented yet')
