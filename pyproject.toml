@@ -1,0 +1,15 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "gitmini"
+version = "0.1.0"
+description = "A lightweight CLI version control system that replicates core Git commands from scratch."
+authors = [
+    { name="James Furtado" }
+]
+dependencies = []
+
+[project.scripts]
+gitmini = "gitmini.cli:main"

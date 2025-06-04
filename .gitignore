@@ -2,3 +2,6 @@ __pycache__/
 *.pyc
 .venv/
 .gitmini/
+*.egg-info
+dist/
+build/
