@@ -1,5 +1,4 @@
 import os
-import shutil
 from tests.test_helpers import GitMiniTestCase, GITMINI_DIR
 import io
 import sys
@@ -24,3 +23,4 @@ class TestFindGitminiRoot(GitMiniTestCase):
             self.assertEqual(cm.exception.code, 1)
         finally:
             sys.stderr = stderr_backup
+

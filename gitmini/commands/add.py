@@ -1,5 +1,5 @@
 import os
-from gitmini.utils import find_gitmini_root
+from gitmini.utils import find_gitmini_root, compute_sha1
 
 def handle_add(args):
     """ Handles the 'add' command to stage files for later commits. """
@@ -11,7 +11,6 @@ def handle_add(args):
     # Identify passed in files/folders for staging
     targets = args.targets if hasattr(args, 'targets') and args.targets else []
 
-    # If no files specified:
     if not targets:
         print("No files specified to add.")
         return
@@ -19,19 +18,15 @@ def handle_add(args):
     all_files_to_stage = set()
 
     for target in targets:
-        # Normalize path relative to repo root
         abs_target_path = os.path.abspath(os.path.join(os.getcwd(), target))
 
-        # If target is a file:
         if os.path.isfile(abs_target_path):
             rel_path = os.path.relpath(abs_target_path, repo_root)
             if not rel_path.startswith(".gitmini/"):
                 all_files_to_stage.add(rel_path)
 
-        # If target is a directory:
         elif os.path.isdir(abs_target_path):
             for root, dirs, files in os.walk(abs_target_path):
-                # Skip the .gitmini directory
                 dirs[:] = [d for d in dirs if d != ".gitmini"]
 
                 for file in files:
@@ -43,8 +38,35 @@ def handle_add(args):
         else:
             print(f"Warning: '{target}' is not a valid file or directory. Skipping.")
 
-    # Print staged files
-    # Currently, nothing is actually staged. Files are just identified.
-    print("Files to stage:")
-    for path in sorted(all_files_to_stage):
-        print(f"  {path}")
+    # Perform SHA-1 hashing and store blobs
+    objects_dir = os.path.join(repo_root, ".gitmini", "objects")
+    os.makedirs(objects_dir, exist_ok=True)
+
+    staged_files = {}  # rel_path → sha1 hash
+
+    for rel_path in sorted(all_files_to_stage):
+        abs_path = os.path.join(repo_root, rel_path)
+
+        try:
+            with open(abs_path, "rb") as f:
+                contents = f.read()
+        except Exception as e:
+            print(f"Error reading {rel_path}: {e}")
+            continue
+
+        sha1_hash = compute_sha1(contents)
+        blob_path = os.path.join(objects_dir, sha1_hash)
+
+        if not os.path.exists(blob_path):
+            try:
+                with open(blob_path, "wb") as f:
+                    f.write(contents)
+            except Exception as e:
+                print(f"Error writing blob for {rel_path}: {e}")
+                continue
+
+        staged_files[rel_path] = sha1_hash
+
+    for rel_path in sorted(staged_files.keys()):
+        print(f"Added {rel_path}")
+

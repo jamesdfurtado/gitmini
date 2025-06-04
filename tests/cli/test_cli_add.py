@@ -27,3 +27,29 @@ class TestAddCommand(GitMiniTestCase):
 
         self.assertIn("file.txt", result.stdout)
         self.assertIn("folder\\infolder.txt", result.stdout)
+
+    def test_blob_created_for_added_file(self):
+        """ Test that 'gitmini add <file>' creates a blob in .gitmini/objects/ """
+        self.run_gitmini(['init'])
+
+        # Write file with known contents
+        content = b"Blob me up, Scotty."
+        file_path = os.path.join(os.getcwd(), "blobfile.txt")
+        with open(file_path, "wb") as f:
+            f.write(content)
+
+        # Dynamically compute expected hash
+        from gitmini.utils import compute_sha1
+        expected_hash = compute_sha1(content)
+
+        self.run_gitmini(['add', 'blobfile.txt'])
+
+        blob_path = os.path.join(GITMINI_DIR, "objects", expected_hash)
+        self.assertTrue(os.path.exists(blob_path))
+
+        # Confirm contents match
+        with open(blob_path, "rb") as f:
+            blob_data = f.read()
+        self.assertEqual(blob_data, content)
+
+

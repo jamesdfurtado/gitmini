@@ -1,5 +1,6 @@
 import os
 import sys
+import hashlib
 
 def find_gitmini_root():
     """Walks up from the current directory to locate the .gitmini directory."""
@@ -13,3 +14,7 @@ def find_gitmini_root():
             print("fatal: not a gitmini repository (or any of the parent directories): .gitmini", file=sys.stderr)
             sys.exit(1)
         current_dir = parent_dir
+
+def compute_sha1(data: bytes) -> str:
+    """Compute SHA-1 hash of files and return it as a hex string."""
+    return hashlib.sha1(data).hexdigest()
