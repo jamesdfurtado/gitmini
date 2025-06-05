@@ -3,7 +3,8 @@ from tests.test_helpers import GitMiniTestCase, GITMINI_DIR
 
 class TestInitCommand(GitMiniTestCase):
 
-    def test_cli_init_stub(self):
+
+    def test_init_stub(self):
         """ Test that 'gitmini init' initializes .gitmini repo correctly """
         result = self.run_gitmini(['init'])
 
@@ -13,14 +14,18 @@ class TestInitCommand(GitMiniTestCase):
         self.assertTrue(os.path.isdir(os.path.join(GITMINI_DIR, 'logs')))
         self.assertTrue(os.path.isfile(os.path.join(GITMINI_DIR, 'index')))
 
-    def test_cli_init_already_initialized(self):
-        """ Test that 'gitmini init' does not reinitialize an existing repository """
+
+    def test_already_initialized(self):
+        """ Test that 'gitmini init' does not re-init an existing repository """
+
         self.run_gitmini(['init'])
         result = self.run_gitmini(['init'])
         self.assertIn("GitMini repository already initialized.", result.stdout)
 
-    def test_cli_init_help(self):
+
+    def test_help(self):
         """ Test that 'gitmini init --help' shows help msg """
+
         result = self.run_gitmini(['init', '--help'])
         self.assertIn("usage: gitmini init", result.stdout)
         self.assertIn("Initialize a new GitMini repository in the current directory.", result.stdout)
