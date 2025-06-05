@@ -74,13 +74,17 @@ class TestAddCommand2(GitMiniTestCase):
 
 
     def test_file_order(self):
-        """ Test that 'gitmini add .' outputs files in consistent sorted order """
-
+        """ Test that 'gitmini add .' outputs files in consistent sorted order and handles skips """
         self.run_gitmini(['init'])
+
         result1 = self.run_gitmini(['add', '.'])
         result2 = self.run_gitmini(['add', '.'])
 
         added1 = sorted([line for line in result1.stdout.splitlines() if line.startswith("Added ")])
-        added2 = sorted([line for line in result2.stdout.splitlines() if line.startswith("Added ")])
+        skipped2 = sorted([line for line in result2.stdout.splitlines() if line.startswith("Skipped ")])
 
-        self.assertEqual(added1, added2)
+        paths1 = [line.split(" ", 1)[1] for line in added1]
+        paths2 = [line.split(" ", 1)[1].rsplit(" ", 1)[0] for line in skipped2]
+
+        self.assertEqual(paths1, paths2)
+
