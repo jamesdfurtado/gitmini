@@ -59,3 +59,20 @@ class TestCommitCommand1(GitMiniTestCase):
 
         result = self.run_gitmini(['commit'])
         self.assertIn("Staged files found. Proceeding with commit...", result.stdout)
+
+    def test_commit_reads_index_entries(self):
+        """ Test that 'gitmini commit' correctly parses index entries """
+
+        self.run_gitmini(['init'])
+
+        # Write example entries into the index
+        index_path = os.path.join(GITMINI_DIR, "index")
+        with open(index_path, "w") as f:
+            f.write("abc123 file1.txt\n")
+            f.write("def456 dir/file2.txt\n")
+
+        result = self.run_gitmini(['commit'])
+        self.assertIn("Staged files found. Proceeding with commit...", result.stdout)
+
+
+

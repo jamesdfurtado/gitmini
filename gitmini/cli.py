@@ -45,6 +45,11 @@ def main():
         help='Commit staged changes',
         description='Record a new commit with the current staged files.'
     )
+    commit_parser.add_argument(
+        '-m', '--message',
+        help='Commit message to describe the changes',
+        required=False
+    )
     commit_parser.set_defaults(func=handle_commit)
 
     # log
