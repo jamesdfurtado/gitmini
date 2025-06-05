@@ -19,7 +19,9 @@ def handle_add(args):
 
     for target in targets:
         # Some path fixing stuff... idrk but it works
-        abs_target_path = os.path.abspath(os.path.join(repo_root, os.path.relpath(target)))
+        cwd = os.getcwd()
+        abs_target_path = os.path.abspath(os.path.join(cwd, target))
+
 
         # Skip files in .gitmini
         if os.path.commonpath([abs_target_path, os.path.join(repo_root, ".gitmini")]) == os.path.join(repo_root, ".gitmini"):
@@ -53,7 +55,20 @@ def handle_add(args):
     objects_dir = os.path.join(repo_root, ".gitmini", "objects")
     os.makedirs(objects_dir, exist_ok=True)
 
-    staged_files = {}  # rel_path --> sha1 hash
+    # Load index if it exists
+    index_path = os.path.join(repo_root, ".gitmini", "index")
+    index = {}
+    if os.path.exists(index_path):
+        with open(index_path, "r") as f:
+            for line in f:
+                try:
+                    hash_val, rel_path = line.strip().split(" ", 1)
+                    index[rel_path] = hash_val
+                except ValueError:
+                    continue  # Skip messed up lines
+
+    updated_index = index.copy()
+    output_lines = []
 
     for rel_path in sorted(all_files_to_stage):
         abs_path = os.path.join(repo_root, rel_path)
@@ -79,8 +94,17 @@ def handle_add(args):
                 print(f"Error writing blob for {rel_path}: {e}")
                 continue
 
-        # Track staged file and hash
-        staged_files[rel_path] = sha1_hash
+        # Only update index if file is new or modified
+        if index.get(rel_path) == sha1_hash:
+            output_lines.append(f"Skipped {rel_path} (unchanged)")
+        else:
+            updated_index[rel_path] = sha1_hash
+            output_lines.append(f"Added {rel_path}")
 
-    for rel_path in sorted(staged_files.keys()):
-        print(f"Added {rel_path}")
+    # Write updated index to disk
+    with open(index_path, "w") as f:
+        for rel_path in sorted(updated_index.keys()):
+            f.write(f"{updated_index[rel_path]} {rel_path}\n")
+
+    for line in output_lines:
+        print(line)
