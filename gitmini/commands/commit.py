@@ -1,8 +1,9 @@
 import os
-from datetime import datetime
+import datetime
 from gitmini.utils import find_gitmini_root
+import hashlib
 
-def handle_commit(args):
+def handle_commit(args, _test_timestamp=None):
     """ Handles the 'commit' command to record a new commit from staged files. """
 
     # Locate the GitMini repo root
@@ -34,8 +35,6 @@ def handle_commit(args):
         except ValueError:
             print(f"Skipping malformed index entry: {line}")
 
-    # ----- Phase 3: Prepare Commit Metadata -----
-
     # Get parent commit hash if HEAD exists
     head_path = os.path.join(repo_root, ".gitmini", "HEAD")
     parent_hash = None
@@ -43,8 +42,11 @@ def handle_commit(args):
         with open(head_path, "r") as f:
             parent_hash = f.read().strip()
 
-    # Get current timestamp
-    timestamp = datetime.now().isoformat()
+    # Get current timestamp (allow override for testing)
+    if _test_timestamp:
+        timestamp = _test_timestamp
+    else:
+        timestamp = datetime.datetime.now().isoformat()
 
     # Get commit message
     import sys
@@ -61,7 +63,6 @@ def handle_commit(args):
         print("Aborting commit: empty message.")
         return
 
-
     # Construct commit object as a string
     lines = []
     if parent_hash:
@@ -76,3 +77,27 @@ def handle_commit(args):
     print("\n--- Commit Content Preview ---")
     print(commit_contents)
     print("------------------------------")
+
+    # Encode commit contents and compute SHA-1 hash
+    commit_bytes = commit_contents.encode('utf-8')
+    commit_hash = hashlib.sha1(commit_bytes).hexdigest()
+
+    # Determine commit object path
+    objects_dir = os.path.join(repo_root, ".gitmini", "objects")
+    commit_path = os.path.join(objects_dir, commit_hash)
+
+    # Ensure .gitmini/objects directory exists
+    os.makedirs(objects_dir, exist_ok=True)
+
+    # Write commit object if it doesn't already exist
+    if not os.path.exists(commit_path):
+        with open(commit_path, "wb") as f:
+            f.write(commit_bytes)
+        print(f"Commit object written to: {commit_path}")
+        
+        # Update HEAD to point to the new commit
+        with open(head_path, "w") as f:
+            f.write(commit_hash)
+        print(f"HEAD updated to: {commit_hash}")
+    else:
+        print("Commit already exists in object store.")
