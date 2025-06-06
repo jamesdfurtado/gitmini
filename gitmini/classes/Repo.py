@@ -1,0 +1,1 @@
+# 	Finds .gitmini/, manages HEAD, object store path, etc.

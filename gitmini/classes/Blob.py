@@ -1,0 +1,1 @@
+# Represents and saves a file’s content as a SHA-1 object

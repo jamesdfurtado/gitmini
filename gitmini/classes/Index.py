@@ -1,0 +1,1 @@
+# 	Handles reading, updating, and clearing the staging area

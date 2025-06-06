@@ -1,0 +1,1 @@
+# 	Represents a commit (message, timestamp, parent, list of blobs)
