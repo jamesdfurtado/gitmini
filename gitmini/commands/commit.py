@@ -1,7 +1,7 @@
 import os
 import datetime
-from gitmini.utils import find_gitmini_root
 import hashlib
+from gitmini.utils import find_gitmini_root
 
 def handle_commit(args, _test_timestamp=None):
     """ Handles the 'commit' command to record a new commit from staged files. """
@@ -43,14 +43,10 @@ def handle_commit(args, _test_timestamp=None):
             parent_hash = f.read().strip()
 
     # Get current timestamp (allow override for testing)
-    if _test_timestamp:
-        timestamp = _test_timestamp
-    else:
-        timestamp = datetime.datetime.now().isoformat()
+    timestamp = _test_timestamp or datetime.datetime.now().isoformat()
 
     # Get commit message
     import sys
-
     if args.message:
         message = args.message.strip()
     else:
@@ -85,8 +81,6 @@ def handle_commit(args, _test_timestamp=None):
     # Determine commit object path
     objects_dir = os.path.join(repo_root, ".gitmini", "objects")
     commit_path = os.path.join(objects_dir, commit_hash)
-
-    # Ensure .gitmini/objects directory exists
     os.makedirs(objects_dir, exist_ok=True)
 
     # Write commit object if it doesn't already exist
@@ -94,10 +88,17 @@ def handle_commit(args, _test_timestamp=None):
         with open(commit_path, "wb") as f:
             f.write(commit_bytes)
         print(f"Commit object written to: {commit_path}")
-        
-        # Update HEAD to point to the new commit
+
+
         with open(head_path, "w") as f:
             f.write(commit_hash)
         print(f"HEAD updated to: {commit_hash}")
+
+        try:
+            os.remove(index_path)
+            print("Staging area cleared.")
+        except Exception as e:
+            print(f"Warning: Failed to clear staging area – {e}")
+
     else:
         print("Commit already exists in object store.")
