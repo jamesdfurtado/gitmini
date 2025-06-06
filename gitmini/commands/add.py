@@ -1,110 +1,83 @@
 import os
-from gitmini.utils import find_gitmini_root, compute_sha1
+import sys
+from gitmini.utils import find_gitmini_root
+from gitmini.classes.Repo import Repo
+from gitmini.classes.Blob import Blob
+from gitmini.classes.Index import Index
 
 def handle_add(args):
-    """ Handles the 'add' command to stage files for later commits. """
+    """
+    Stages newly added or changed files.
+    Just like git, can be used with <file>, <dir>, or "."
+    """
 
-    # Locate the GitMini repo root
     repo_root = find_gitmini_root()
-    print(f"Located .gitmini repo at: {repo_root}")
+    repo = Repo(repo_root)
+    index = Index(repo)
 
-    # Identify passed in files/folders for staging
-    targets = args.targets if hasattr(args, 'targets') and args.targets else []
-
+    cwd = os.getcwd()
+    targets = args.targets
     if not targets:
-        print("No files specified to add.")
-        return
+        print("Nothing specified, nothing added.")
+        sys.exit(1)
 
-    all_files_to_stage = set()
+    # Create a list of filepaths
+    to_stage = []
 
-    for target in targets:
-        # Some path fixing stuff... idrk but it works
-        cwd = os.getcwd()
-        abs_target_path = os.path.abspath(os.path.join(cwd, target))
+    if len(targets) == 1 and targets[0] == ".":
+        # Use command relative to the current working directory
+        base_dir = cwd
+        for root, dirs, files in os.walk(base_dir):
+            if ".gitmini" in dirs:
+                dirs.remove(".gitmini")
+            for file in files:
+                abs_path = os.path.join(root, file)
+                # Determine relative path to the repo root
+                rel_path = os.path.relpath(abs_path, repo_root)
+                to_stage.append(rel_path)
+    else:
+        for t in targets:
+            abs_t = os.path.join(cwd, t)
+            if os.path.isdir(abs_t):
+                # Walk up the directory (AVOIDS .gitmini)
+                for root, dirs, files in os.walk(abs_t):
+                    if ".gitmini" in dirs:
+                        dirs.remove(".gitmini")
+                    for file in files:
+                        abs_path = os.path.join(root, file)
+                        rel_path = os.path.relpath(abs_path, repo_root)
+                        to_stage.append(rel_path)
+            elif os.path.isfile(abs_t):
+                rel_path = os.path.relpath(abs_t, repo_root)
+                to_stage.append(rel_path)
+            else:
+                print(f"warning: pathspec '{t}' did not match any files", file=sys.stderr)
 
+    # Track whether anything actually changed
+    changed = False
 
-        # Skip files in .gitmini
-        if os.path.commonpath([abs_target_path, os.path.join(repo_root, ".gitmini")]) == os.path.join(repo_root, ".gitmini"):
-            continue
-
-        if os.path.isfile(abs_target_path):
-            # Add a single file
-            rel_path = os.path.relpath(abs_target_path, repo_root)
-            all_files_to_stage.add(rel_path)
-
-        elif os.path.isdir(abs_target_path):
-            # Collect all files in a directory
-            for root, dirs, files in os.walk(abs_target_path):
-                # Prevent going into .gitmini
-                dirs[:] = [d for d in dirs if os.path.join(root, d) != os.path.join(repo_root, ".gitmini")]
-
-                for file in files:
-                    file_path = os.path.join(root, file)
-                    # Skip files inside .gitmini
-                    if os.path.commonpath([file_path, os.path.join(repo_root, ".gitmini")]) == os.path.join(repo_root, ".gitmini"):
-                        continue
-                    # Add each file
-                    rel_path = os.path.relpath(file_path, repo_root)
-                    all_files_to_stage.add(rel_path)
-
-        else:
-            # Invalid input (nonexistent file/dir)
-            print(f"Warning: '{target}' is not a valid file or directory. Skipping.")
-
-    # Perform SHA-1 hashing and store blobs
-    objects_dir = os.path.join(repo_root, ".gitmini", "objects")
-    os.makedirs(objects_dir, exist_ok=True)
-
-    # Load index if it exists
-    index_path = os.path.join(repo_root, ".gitmini", "index")
-    index = {}
-    if os.path.exists(index_path):
-        with open(index_path, "r") as f:
-            for line in f:
-                try:
-                    hash_val, rel_path = line.strip().split(" ", 1)
-                    index[rel_path] = hash_val
-                except ValueError:
-                    continue  # Skip messed up lines
-
-    updated_index = index.copy()
-    output_lines = []
-
-    for rel_path in sorted(all_files_to_stage):
+    # For each file in to_stage, compute its SHA-1, write a Blob if needed, update Index
+    for rel_path in to_stage:
         abs_path = os.path.join(repo_root, rel_path)
-
-        try:
-            # Read file content for hashing
-            with open(abs_path, "rb") as f:
-                contents = f.read()
-        except Exception as e:
-            print(f"Error reading {rel_path}: {e}")
+        if not os.path.isfile(abs_path):
             continue
 
-        # Compute blob hash
-        sha1_hash = compute_sha1(contents)
-        blob_path = os.path.join(objects_dir, sha1_hash)
+        # Create Blob
+        blob = Blob(repo, rel_path)
+        sha1 = blob.sha1
 
-        # Store blob if not already done
-        if not os.path.exists(blob_path):
-            try:
-                with open(blob_path, "wb") as f:
-                    f.write(contents)
-            except Exception as e:
-                print(f"Error writing blob for {rel_path}: {e}")
-                continue
+        # Avoid recreating blob if already exists. YAY CACHING!
+        if index.entries.get(rel_path) == sha1:
+            continue
 
-        # Only update index if file is new or modified
-        if index.get(rel_path) == sha1_hash:
-            output_lines.append(f"Skipped {rel_path} (unchanged)")
-        else:
-            updated_index[rel_path] = sha1_hash
-            output_lines.append(f"Added {rel_path}")
+        # Else, create blob and add to index
+        blob.write()
+        index.add(rel_path, sha1)
+        changed = True
 
-    # Write updated index to disk
-    with open(index_path, "w") as f:
-        for rel_path in sorted(updated_index.keys()):
-            f.write(f"{updated_index[rel_path]} {rel_path}\n")
+    if not changed:
+        print("nothing to add")
+        sys.exit(0)
 
-    for line in output_lines:
-        print(line)
+    # Finalize index
+    index.write()

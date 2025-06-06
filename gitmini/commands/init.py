@@ -1,19 +1,10 @@
 import os
+import sys
+from gitmini.classes.Repo import Repo
 
 def handle_init(args):
-    """Initializes a new GitMini repository."""
-    
-    gitmini_dir = '.gitmini'
-    subdirs = ['objects', 'logs']
-    index_file = 'index'
-
-    if os.path.exists(gitmini_dir):
-        print("GitMini repository already initialized.")
-        return
-
-    os.makedirs(gitmini_dir)
-    for sub in subdirs:
-        os.makedirs(os.path.join(gitmini_dir, sub))
-    open(os.path.join(gitmini_dir, index_file), 'w').close()
-
-    print("Initialized empty GitMini repository in .gitmini/")
+    """
+    Creates a new .gitmini/ directory in the current working directory.
+    """
+    cwd = os.getcwd()
+    Repo.init(cwd)

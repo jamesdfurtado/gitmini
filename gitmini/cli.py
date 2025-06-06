@@ -26,7 +26,7 @@ def main():
     init_parser.set_defaults(func=handle_init)
 
     # add
-    add_parser = subparsers.add_parser(     # Base command
+    add_parser = subparsers.add_parser( 
         'add',
         help='Add files to staging area',
         description='Add specified files to GitMini\'s staging area for the next commit.'
