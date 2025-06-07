@@ -4,40 +4,55 @@ import unittest
 import subprocess
 import sys
 
-# Allows running CLI commands as if we were in the project root
+# Point to project root
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
 
-GITMINI_DIR = '.gitmini'
-TEST_ENV_DIR = os.path.join('tests', 'test_env')
+TEST_ENV_DIR = os.path.join(os.path.dirname(__file__), 'test_env')
+GITMINI_DIR = os.path.join(TEST_ENV_DIR, '.gitmini')
 
 
 class GitMiniTestCase(unittest.TestCase):
-    # Clean up .gitmini before tests
+    """
+    Helper classes to setup and teardown .gitmini/ repos during testing
+    """
+
     def setUp(self):
+        """ Sets up and cleans .gitmini/ each test """
         self._original_cwd = os.getcwd()
-        self.repo_dir = os.path.abspath(TEST_ENV_DIR)  # Absolute path to test_env
+        self.repo_dir = os.path.abspath(TEST_ENV_DIR)
+
+        # Ensure test_env exists
+        if not os.path.isdir(self.repo_dir):
+            os.makedirs(self.repo_dir)
+
+        # Cleanup test_env/
+        for entry in os.listdir(self.repo_dir):
+            full = os.path.join(self.repo_dir, entry)
+            if os.path.isdir(full):
+                shutil.rmtree(full)
+            else:
+                os.remove(full)
+
         os.chdir(self.repo_dir)
 
         if os.path.exists(GITMINI_DIR):
             shutil.rmtree(GITMINI_DIR)
 
-    # Clean up .gitmini after tests
     def tearDown(self):
+        # Remove .gitmini after each test
         if os.path.exists(GITMINI_DIR):
             shutil.rmtree(GITMINI_DIR)
-
         os.chdir(self._original_cwd)
 
     def run_gitmini(self, args):
-        """Run 'gitmini' inside test environment folder"""
+        """ Runs 'gitmini' command in the test environment. """
         env = os.environ.copy()
-        env['PYTHONPATH'] = self._original_cwd
+        env['PYTHONPATH'] = self._original_cwd  # add to project PATH
 
-        # This does 'python -m gitmini' for us to avoid repitition
         return subprocess.run(
             ['python', '-m', 'gitmini'] + args,
-            cwd=self.repo_dir,              # run the command inside test environment
-            env=env,                        # ensure .gitmini is findable
+            cwd=self.repo_dir,
+            env=env,
             capture_output=True,
             text=True
         )
