@@ -10,7 +10,8 @@ class HEAD:
         self.head_file = os.path.join(repo.gitmini_dir, "HEAD")
         self.value = None
         if os.path.exists(self.head_file):
-            content = open(self.head_file, "r").read().strip()
+            with open(self.head_file, "r") as f:
+                content = f.read().strip()
             self.value = content if content else None
 
     def set(self, sha1):
