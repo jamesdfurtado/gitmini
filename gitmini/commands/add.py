@@ -26,7 +26,7 @@ def handle_add(args):
 
     if len(targets) == 1 and targets[0] == ".":
         # Use command relative to the current working directory
-        base_dir = cwd
+        base_dir = repo_root
         for root, dirs, files in os.walk(base_dir):
             if ".gitmini" in dirs:
                 dirs.remove(".gitmini")
@@ -37,7 +37,7 @@ def handle_add(args):
                 to_stage.append(rel_path)
     else:
         for t in targets:
-            abs_t = os.path.join(cwd, t)
+            abs_t = os.path.join(repo_root, t)
             if os.path.isdir(abs_t):
                 # Walk up the directory (AVOIDS .gitmini)
                 for root, dirs, files in os.walk(abs_t):
