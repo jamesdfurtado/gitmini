@@ -10,7 +10,7 @@ class Index:
     def __init__(self, repo):
         self.repo = repo
         self.index_file = os.path.join(repo.gitmini_dir, "index")
-        # load existing entries
+        # Load the index's entries
         self.entries = {}  # { filepath: blob_hash }
         if os.path.exists(self.index_file):
             with open(self.index_file, "r") as f:
@@ -21,7 +21,7 @@ class Index:
                     sha1, path = line.split(" ", 1)
                     self.entries[path] = sha1
 
-        # Get rid of entries for files that no longer exist
+        # Prune nonexistent files from index
         for path in list(self.entries.keys()):
             full = os.path.join(repo.root, path)
             if not os.path.isfile(full):

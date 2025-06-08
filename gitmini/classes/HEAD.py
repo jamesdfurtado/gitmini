@@ -2,8 +2,8 @@ import os
 
 class HEAD:
     """
-    Manages HEAD pointer: either a symbolic ref (e.g., 'ref: refs/heads/main')
-    or a raw commit hash (detached).
+    The HEAD pointer is either a reference to a branch (which points to the most recent commit there)
+    OR, it points to a specific commit's hash (detached HEAD state).
     """
 
     def __init__(self, repo):
@@ -19,13 +19,13 @@ class HEAD:
         return not self.value or not self.value.startswith("ref: ")
 
     def get_ref(self):
-        # e.g. returns "refs/heads/main" or None
+        # will return "refs/heads/main" or None
         if self.value and self.value.startswith("ref: "):
             return self.value.split(" ", 1)[1]
         return None
 
     def get_commit(self):
-        # resolve symbolic ref → commit hash, or return raw hash
+        # We use this to pull the HEAD commit's hash
         ref = self.get_ref()
         if ref:
             ref_path = os.path.join(self.repo.gitmini_dir, ref)
@@ -33,20 +33,20 @@ class HEAD:
         return self.value
 
     def set_ref(self, branch):
-        # switch HEAD to point at a branch
+        # Switch HEAD's branch pointer
         content = f"ref: refs/heads/{branch}"
         with open(self.head_file, "w") as f:
             f.write(content)
         self.value = content
 
     def set_commit(self, sha1):
-        # detach HEAD to a specific commit
+        # Detach HEAD, point it to a commit hash
         with open(self.head_file, "w") as f:
             f.write(sha1)
         self.value = sha1
 
     def update(self, sha1):
-        # update the branch pointer that HEAD refers to
+        # Update the designated branch pointer
         ref = self.get_ref()
         if not ref:
             raise RuntimeError("Cannot update branch in detached HEAD state")

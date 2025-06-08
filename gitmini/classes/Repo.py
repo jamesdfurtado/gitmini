@@ -31,19 +31,18 @@ class Repo:
             print(f"fatal: reinitialized existing GitMini repository in {gitmini_dir}")
             sys.exit(1)
 
-        # core dirs
+        # Setting up .gitmini folder structure
         os.makedirs(gitmini_dir)
         os.makedirs(os.path.join(gitmini_dir, "objects"))
         os.makedirs(os.path.join(gitmini_dir, "refs", "heads"))
 
-        # init empty index
         open(os.path.join(gitmini_dir, "index"), "w").close()
 
-        # set up default main branch (empty)
+        # Immediately create "main" branch by default
         main_ref = os.path.join(gitmini_dir, "refs", "heads", "main")
         open(main_ref, "w").close()
 
-        # point HEAD to refs/heads/main
+        # Point HEAD to refs/heads/main
         with open(os.path.join(gitmini_dir, "HEAD"), "w") as f:
             f.write("ref: refs/heads/main")
 

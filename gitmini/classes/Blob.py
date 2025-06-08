@@ -27,11 +27,12 @@ class Blob:
         Write the raw content into .gitmini/objects/<blob_sha1_hash> if not already there.
         Returns the SHA-1 string.
         """
-        object_path = os.path.join(self.repo.objects_dir, self.sha1)
-        if not os.path.exists(object_path):
-            with open(object_path, "wb") as out:
-                out.write(self.content)
+        path = os.path.join(self.repo.objects_dir, self.sha1)
+        if not os.path.exists(path):
+            with open(path, "wb") as f:
+                f.write(self.content)
         return self.sha1
+
 
 
 # Currently not compressing the file contents.
