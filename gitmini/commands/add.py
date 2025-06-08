@@ -65,12 +65,13 @@ def handle_add(args):
     for rel_path in list(index.entries.keys()):
         abs_path = os.path.join(repo_root, rel_path)
         if not os.path.isfile(abs_path):
-            # file was deleted on disk → unstage it
+            # unstage deleted files
             del index.entries[rel_path]
             changed = True
 
     if not changed:
-        print("nothing to add") # this currently prints for when a file is deleted too. It is a glitch because we deleted a file, so nothing was added per se, but deleted.
+        print("nothing to add")
         sys.exit(0)
+
 
     index.write()
