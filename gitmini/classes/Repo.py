@@ -12,7 +12,6 @@ class Repo:
         if path:
             self.root = path
         else:
-            # Else, find the root by walking up current directory
             from gitmini.utils import find_gitmini_root
             self.root = find_gitmini_root()
 
@@ -24,7 +23,7 @@ class Repo:
     @staticmethod
     def init(path):
         """
-        Set up a .gitmini/ repository
+        Set up a .gitmini/ repository with a default 'main' branch.
         Will fail if one already exists.
         """
         gitmini_dir = os.path.join(path, ".gitmini")
@@ -32,11 +31,20 @@ class Repo:
             print(f"fatal: reinitialized existing GitMini repository in {gitmini_dir}")
             sys.exit(1)
 
+        # Setting up .gitmini folder structure
         os.makedirs(gitmini_dir)
         os.makedirs(os.path.join(gitmini_dir, "objects"))
-        # Create an empty index file
+        os.makedirs(os.path.join(gitmini_dir, "refs", "heads"))
+
         open(os.path.join(gitmini_dir, "index"), "w").close()
-        # Create an empty HEAD file
-        open(os.path.join(gitmini_dir, "HEAD"), "w").close()
+
+        # Immediately create "main" branch by default
+        main_ref = os.path.join(gitmini_dir, "refs", "heads", "main")
+        open(main_ref, "w").close()
+
+        # Point HEAD to refs/heads/main
+        with open(os.path.join(gitmini_dir, "HEAD"), "w") as f:
+            f.write("ref: refs/heads/main")
 
         print(f"Initialized empty GitMini repository in {gitmini_dir}")
+

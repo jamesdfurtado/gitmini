@@ -3,7 +3,7 @@ from gitmini.utils import compute_sha1
 
 class Tree:
     """
-    A tree represents a "snapshot" of the project's files and hierarchy at the time of the commit.
+    A tree represents a "snapshot" of the project at the time of the commit.
     It is built strictly from the Index's blob-file mapping.
 
     It is stored under .gitmini/objects and named <tree_sha1_hash>. (The contents are just the index at the time)
@@ -30,14 +30,21 @@ class Tree:
         lines = []
         for path, blob_hash in sorted(self.entries.items()):
             lines.append(f"{blob_hash} {path}")
-        content_bytes = "\n".join(lines).encode()
 
+        # Append the index entries as <blob_hash> <file_path>
+        lines = []
+        for filepath, blob_hash in sorted(self.entries.items()):
+            lines.append(f"{blob_hash} {filepath}")
+
+        content_bytes = "\n".join(lines).encode()
         self.sha1 = compute_sha1(content_bytes)
+
         object_path = os.path.join(self.repo.objects_dir, self.sha1)
         if not os.path.exists(object_path):
             with open(object_path, "wb") as out:
                 out.write(content_bytes)
         return self.sha1
+
 
 
 # Stored in objects/ as <tree_sha1_hash>
