@@ -10,7 +10,7 @@ from tests.test_helpers import GitMiniTestCase, GITMINI_DIR
 class TestIndex(GitMiniTestCase):
 
     def test_add_and_write_entries(self):
-        """Index should save staged file:hash pairs into index file."""
+        """ Index should save staged file to hash pairs into index file """
         buf = io.StringIO()
         with contextlib.redirect_stdout(buf):
             Repo.init(self.repo_dir)
@@ -28,7 +28,7 @@ class TestIndex(GitMiniTestCase):
         self.assertIn("def456 bar.txt", lines)
 
     def test_init_loads_existing(self):
-        """Index should properly load existing contents on instantiation."""
+        """ Test that init loads existing index entries """
         buf = io.StringIO()
         with contextlib.redirect_stdout(buf):
             Repo.init(self.repo_dir)

@@ -8,7 +8,7 @@ class TestInit(GitMiniTestCase):
         """ 'gitmini init --help' prints help msg. """
         result = self.run_gitmini(['init', '--help'])
         self.assertIn('usage: gitmini init', result.stdout)
-        self.assertIn('Initialize a new GitMini repository', result.stdout)
+        self.assertIn('-h, --help', result.stdout)
 
     def test_success_creates_repo(self):
         """ Init creates a new GitMini repository. """

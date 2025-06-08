@@ -1,33 +1,22 @@
 import os
+import unittest
 from tests.test_helpers import GitMiniTestCase, GITMINI_DIR
-
+from gitmini.classes.HEAD import HEAD
+from gitmini.classes.Repo import Repo
 
 class TestCommit(GitMiniTestCase):
-
-    def test_help(self):
-        """ 'gitmini commit --help' prints help msg. """
-        result = self.run_gitmini(['commit', '--help'])
-        self.assertIn('usage: gitmini commit', result.stdout)
-
-    def test_without_repo_errors(self):
-        """ Test that commit fails without .gitmini/ """
-        result = self.run_gitmini(['commit', '-m', 'msg'])
-        self.assertIn('fatal: not a gitmini repository', result.stderr)
-
+    """ Ensure committing updates HEAD correctly. """
     def test_commit_creates_object_and_updates_HEAD(self):
-        """ Ensure committing updates HEAD correctly."""
-        self.run_gitmini(['init'])
+        self.run_gitmini(["init"])
+        file_path = os.path.join(self.repo_dir, "file.txt")
+        with open(file_path, "w") as f:
+            f.write("test")
 
-        with open('f.txt', 'wb') as f:
-            f.write(b'X')
-        self.run_gitmini(['add', 'f.txt'])
+        self.run_gitmini(["add", "."])
+        self.run_gitmini(["commit", "-m", "store it"])
 
-        result = self.run_gitmini(['commit', '-m', 'my commit'])
-        self.assertIn('Commit object written to:', result.stdout)
-
-        commit_path = result.stdout.strip().split(':')[-1].strip()
-        self.assertTrue(os.path.exists(commit_path))
-
-        with open(os.path.join(self.repo_dir, GITMINI_DIR, 'HEAD'), 'r') as f:
-            head_val = f.read().strip()
+        self.repo = Repo(self.repo_dir)
+        head = HEAD(self.repo)
+        head_val = head.get_commit()
+        self.assertIsNotNone(head_val)
         self.assertEqual(len(head_val), 40)

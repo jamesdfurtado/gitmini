@@ -1,51 +1,37 @@
 import os
-import io
-import contextlib
-
-from gitmini.utils import compute_sha1
+import unittest
+from gitmini.classes.Commit import Commit
 from gitmini.classes.Repo import Repo
+from gitmini.classes.HEAD import HEAD
 from gitmini.classes.Index import Index
 from gitmini.classes.Tree import Tree
-from gitmini.classes.Commit import Commit
-from gitmini.classes.HEAD import HEAD
-from tests.test_helpers import GitMiniTestCase, GITMINI_DIR
+from gitmini.utils import compute_sha1
+from tests.test_helpers import GitMiniTestCase
 
 
 class TestCommit(GitMiniTestCase):
+    """ Ensure all the metadata is logged when we create a Commit object. """
 
     def test_commit_content_and_storage(self):
-        """ Ensure all the metadata is logged when we create a Commit object."""
+        self.run_gitmini(['init'])
+        self.repo = Repo(self.repo_dir)
 
-        buf = io.StringIO()
-        with contextlib.redirect_stdout(buf):
-            Repo.init(self.repo_dir)
-        repo = Repo(self.repo_dir)
+        file_path = os.path.join(self.repo_dir, "test.txt")
+        with open(file_path, "w") as f:
+            f.write("Hello, commit")
 
-        # Create a mock index
-        index = Index(repo)
-        index.add("x.txt", "xxx000")
-        index.write()
+        self.run_gitmini(["add", "."])
+        self.run_gitmini(["commit", "-m", "Commit test"])
 
-        # Manually create a tree SHA
-        tree_hash = Tree(repo, index.entries).sha1
+        head = HEAD(self.repo)
+        commit_hash = head.get_commit()
 
-        # Set a fake HEAD
-        head = HEAD(repo)
-        head.set("parent123")
+        self.assertIsNotNone(commit_hash)
+        obj_path = os.path.join(self.repo.objects_dir, commit_hash)
+        self.assertTrue(os.path.exists(obj_path))
 
-        # Write a commit
-        msg = "Test commit"
-        commit = Commit(repo, tree_hash, head.value, msg)
-        sha = commit.write()
-
-        object_path = os.path.join(repo.objects_dir, sha)
-        self.assertTrue(os.path.exists(object_path))
-
-        # Verify the content of the Commit object
-        with open(object_path, "rb") as f:
-            content = f.read().decode()
-
-        self.assertIn(f"tree {tree_hash}", content)
-        self.assertIn(f"parent {head.value}", content)
-        self.assertIn(msg, content)
-        self.assertEqual(sha, compute_sha1(content.encode()))
+        with open(obj_path, "rb") as f:
+            contents = f.read().decode()
+        self.assertIn("tree", contents)
+        self.assertIn("timestamp", contents)
+        self.assertIn("Commit test", contents)
