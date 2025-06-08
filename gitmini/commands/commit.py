@@ -16,7 +16,8 @@ def handle_commit(args):
     index = Index(repo)
     head = HEAD(repo)
 
-    # block commits in detached HEAD
+    # Do not allow commits in detached HEAD state
+    # TODO: change this. Research how git handles this.
     if head.is_detached():
         print("error: cannot commit in detached HEAD state.")
         print("Run: gitmini branch <name> to create a branch first.")
@@ -26,11 +27,11 @@ def handle_commit(args):
         print("nothing to commit")
         sys.exit(1)
 
-    # build tree from index
+    # Build tree from index
     tree = Tree(repo, index.entries)
     tree_hash = tree.write()
 
-    # find parent commit
+    # Find parent commit
     parent_hash = head.get_commit()
     parent_tree = None
     if parent_hash:
@@ -42,22 +43,21 @@ def handle_commit(args):
                         parent_tree = line.split(" ", 1)[1].strip()
                         break
 
-    # is anything new?
+    # Compare for new changes
     if parent_tree and parent_tree == tree_hash:
         print("nothing to commit")
         sys.exit(1)
 
-    # commit message
     message = args.message or ""
 
-    # write commit object
+    # Write commit
     commit = Commit(repo, tree_hash, parent_hash, message)
     commit_hash = commit.write()
 
-    # update branch pointer (not raw HEAD)
+    # Update branch pointer
     head.update(commit_hash)
 
-    # ── reset index to match this commit's tree ──
+    # Reset index to match this commit's tree
     new_entries = {}
     tree_path = os.path.join(repo.objects_dir, tree_hash)
     with open(tree_path, "rb") as tf:

@@ -19,7 +19,7 @@ def handle_add(args):
         print("Nothing specified, nothing added.")
         sys.exit(1)
 
-    # Build list of files to consider for staging
+    # Files that could be possible be staged
     to_stage = []
     if len(targets) == 1 and targets[0] == ".":
         for root, dirs, files in os.walk(repo_root):
@@ -73,5 +73,4 @@ def handle_add(args):
         print("nothing to add")
         sys.exit(0)
 
-    # Persist index changes (additions & deletions)
     index.write()

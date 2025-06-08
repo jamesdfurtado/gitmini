@@ -14,7 +14,8 @@ def handle_branch(args):
     heads_dir = os.path.join(repo.gitmini_dir, "refs", "heads")
 
     if args.name:
-        # create new branch at current commit
+        # Create new branch
+        # Also copies the current commit
         new_branch = args.name
         branch_file = os.path.join(heads_dir, new_branch)
         if os.path.exists(branch_file):
@@ -24,9 +25,9 @@ def handle_branch(args):
         with open(branch_file, "w") as f:
             f.write(commit_hash)
     else:
-        # list branches, mark current
+        # List branches
         head = HEAD(repo)
         current_ref = head.get_ref()
         for b in sorted(os.listdir(heads_dir)):
-            prefix = "*" if current_ref == f"refs/heads/{b}" else " "
+            prefix = "*" if current_ref == f"refs/heads/{b}" else " "   # Current branch is marked with '*'
             print(f"{prefix} {b}")
