@@ -42,6 +42,7 @@ def handle_log(args):
 
         message = "\n".join(msg_lines).strip()
 
+        print("")
         print(f"commit {commit_hash}")
         if timestamp:
             print(f"Date:   {timestamp}")

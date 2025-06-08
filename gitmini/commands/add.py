@@ -70,7 +70,7 @@ def handle_add(args):
             changed = True
 
     if not changed:
-        print("nothing to add")
+        print("nothing to add") # this currently prints for when a file is deleted too. It is a glitch because we deleted a file, so nothing was added per se, but deleted.
         sys.exit(0)
 
     index.write()

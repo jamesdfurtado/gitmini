@@ -49,6 +49,8 @@ def handle_checkout(args):
         head.set_ref(target)
     else:
         head.set_commit(new_commit)
+        print(f"Note: checking out '{new_commit[:7]}'")
+        print("You are in 'detached HEAD' state. Any commits you make will be orphaned unless you create a branch.")
 
     # Load file contents from the new commit's tree
     new_tree = get_tree_hash(repo, new_commit)
