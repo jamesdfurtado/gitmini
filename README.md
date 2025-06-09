@@ -21,7 +21,7 @@
 
 ## 🎥 Demo
 
-🧱 Core Workflow (init, add, commit, .gitmini-ignore)
+### 🧱 Core Workflow (init, add, commit, .gitmini-ignore)
 
 ![Core Workflow](gifs/core.gif)
 
@@ -30,6 +30,7 @@
 * Comitting files
 * .gitmini-ignore support
 
+<br><br>
 
 🌿 Branching Workflow (log, branch, checkout)
 
