@@ -70,6 +70,7 @@ def handle_add(args):
 
         blob.write()
         index.add(rel_path, sha1)
+        print(f"added: {rel_path}")  # prints staged files
         changed = True
 
     # Detect deletions (files in index that no longer exist on disk)
@@ -80,7 +81,7 @@ def handle_add(args):
         full_path = os.path.join(repo_root, tracked_path)
         if not os.path.isfile(full_path):
             del index.entries[tracked_path]
-#            print(f"deleted: {tracked_path}")  # optional message for tracking file deletions
+            print(f"deleted: {tracked_path}")  # prints deleted files
             changed = True
 
     if not changed:
