@@ -61,13 +61,17 @@ def handle_add(args):
         index.add(rel_path, sha1)
         changed = True
 
-    # Detect and remove deletions
-    for rel_path in list(index.entries.keys()):
-        abs_path = os.path.join(repo_root, rel_path)
-        if not os.path.isfile(abs_path):
-            # unstage deleted files
-            del index.entries[rel_path]
+    # Detect deletions (files in index that no longer exist on disk)
+    tracked_paths = set(index.entries.keys())
+    existing_paths = set(to_stage)
+
+    for tracked_path in tracked_paths:
+        full_path = os.path.join(repo_root, tracked_path)
+        if not os.path.isfile(full_path):
+            del index.entries[tracked_path]
+            print(f"deleted: {tracked_path}")
             changed = True
+
 
     if not changed:
         print("nothing to add")
