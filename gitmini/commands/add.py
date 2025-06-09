@@ -69,9 +69,8 @@ def handle_add(args):
         full_path = os.path.join(repo_root, tracked_path)
         if not os.path.isfile(full_path):
             del index.entries[tracked_path]
-            print(f"deleted: {tracked_path}")
+#            print(f"deleted: {tracked_path}")  # optional message for tracking file deletions
             changed = True
-
 
     if not changed:
         print("nothing to add")

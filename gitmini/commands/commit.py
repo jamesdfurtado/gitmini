@@ -23,10 +23,6 @@ def handle_commit(args):
         print("Run: gitmini branch <name> to create a branch first.")
         sys.exit(1)
 
-    if not index.entries:
-        print("nothing to commit")
-        sys.exit(1)
-
     # Build tree from index
     tree = Tree(repo, index.entries)
     tree_hash = tree.write()
