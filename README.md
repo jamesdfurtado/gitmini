@@ -22,20 +22,22 @@
 ## 🎥 Demo
 
 🧱 Core Workflow (init, add, commit, .gitmini-ignore)
+
+![Core Workflow](gifs/core.gif)
+
 * Initializing a repository
 * Staging (adding) changes
 * Comitting files
 * .gitmini-ignore support
 
-(gif to be added here)
-
 
 🌿 Branching Workflow (log, branch, checkout)
+
+![Branching Workflow](gifs/branch.gif)
+
 * Checking commit logs
 * Viewing current branch, creating new branch
 * Checkout to branches and past commits
-
-(gif to be added here)
 
 ---
 
