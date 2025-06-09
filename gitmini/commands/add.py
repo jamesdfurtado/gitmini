@@ -4,6 +4,8 @@ from gitmini.utils import find_gitmini_root
 from gitmini.classes.Repo import Repo
 from gitmini.classes.Blob import Blob
 from gitmini.classes.Index import Index
+from gitmini.classes.Ignore import Ignore
+
 
 def handle_add(args):
     """
@@ -12,6 +14,7 @@ def handle_add(args):
     """
     repo_root = find_gitmini_root()
     repo = Repo(repo_root)
+    ignore = Ignore(repo)
     index = Index(repo)
 
     targets = args.targets
@@ -25,9 +28,11 @@ def handle_add(args):
         for root, dirs, files in os.walk(repo_root):
             if ".gitmini" in dirs:
                 dirs.remove(".gitmini")
-            for fname in files:
-                rel = os.path.relpath(os.path.join(root, fname), repo_root)
-                to_stage.append(rel)
+                for fname in files:
+                    rel = os.path.relpath(os.path.join(root, fname), repo_root)
+                    if ignore.should_ignore(rel):
+                        continue
+                    to_stage.append(rel)
     else:
         for t in targets:
             abs_t = os.path.join(repo_root, t)
@@ -37,6 +42,8 @@ def handle_add(args):
                         dirs.remove(".gitmini")
                     for fname in files:
                         rel = os.path.relpath(os.path.join(root, fname), repo_root)
+                        if ignore.should_ignore(rel):
+                            continue
                         to_stage.append(rel)
             elif os.path.isfile(abs_t):
                 to_stage.append(os.path.relpath(abs_t, repo_root))
@@ -61,12 +68,15 @@ def handle_add(args):
         index.add(rel_path, sha1)
         changed = True
 
-    # Detect and remove deletions
-    for rel_path in list(index.entries.keys()):
-        abs_path = os.path.join(repo_root, rel_path)
-        if not os.path.isfile(abs_path):
-            # unstage deleted files
-            del index.entries[rel_path]
+    # Detect deletions (files in index that no longer exist on disk)
+    tracked_paths = set(index.entries.keys())
+    existing_paths = set(to_stage)
+
+    for tracked_path in tracked_paths:
+        full_path = os.path.join(repo_root, tracked_path)
+        if not os.path.isfile(full_path):
+            del index.entries[tracked_path]
+#            print(f"deleted: {tracked_path}")  # optional message for tracking file deletions
             changed = True
 
     if not changed:

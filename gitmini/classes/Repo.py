@@ -46,5 +46,14 @@ class Repo:
         with open(os.path.join(gitmini_dir, "HEAD"), "w") as f:
             f.write("ref: refs/heads/main")
 
+        # Create default .gitmini-ignore at repo root
+        ignore_path = os.path.join(path, ".gitmini-ignore")
+        with open(ignore_path, "w") as f:
+            f.write("# GitMini ignore file\n")
+            f.write(".venv/\n")
+            f.write("__pycache__/\n")
+            f.write("*.pyc\n")
+
+
         print(f"Initialized empty GitMini repository in {gitmini_dir}")
 

@@ -21,12 +21,6 @@ class Index:
                     sha1, path = line.split(" ", 1)
                     self.entries[path] = sha1
 
-        # Prune nonexistent files from index
-        for path in list(self.entries.keys()):
-            full = os.path.join(repo.root, path)
-            if not os.path.isfile(full):
-                del self.entries[path]
-
     def add(self, rel_path, sha1):
         """
         Stage a file and record that <rel_path> --> <sha1>.
