@@ -1,8 +1,31 @@
 # GitMini
 
-**GitMini** is a lightweight, minimal version control system built from scratch in Python. It replicates core Git commands like `init`, `add`, `commit`, `log`, and `checkout` — perfect for learning how Git works under the hood or experimenting with your own VCS.
+![PyPI](https://img.shields.io/pypi/v/gitmini)
+![License](https://img.shields.io/github/license/jamesdfurtado/gitmini)
+
+**GitMini** is a lightweight, minimal version control system built from scratch in Python. It replicates core non-remote Git commands like `init`, `add`, `commit`, `log`, `checkout`, and `branch`.
 
 This project has been uploaded to **PyPI**! Find the link here: https://pypi.org/project/gitmini/
+
+---
+
+## Demo
+
+🧱 Core Workflow (init, add, commit, .gitmini-ignore)
+* Initializing a repository
+* Staging (adding) changes
+* Comitting files
+* .gitmini-ignore support
+
+(gif goes here)
+
+
+🌿 Branching Workflow (log, branch, checkout)
+* Checking commit logs
+* Viewing current branch, creating new branch
+* Checkout to branches and past commits
+
+(gif goes here)
 
 ---
 
@@ -14,20 +37,21 @@ This project has been uploaded to **PyPI**! Find the link here: https://pypi.org
 - `gitmini log` – View commit history  
 - `gitmini checkout` – Switch between branches or restore old versions  
 - Simple `.gitmini-ignore` support  
-- Content-addressable storage using SHA-1  
+- Content-addressable storage using SHA-1
 - No external dependencies
 
 ---
 
-## 📦 Installation
+## 📦 Installation and Usage
 
 **Make sure to create and activate a python virtual environment before doing this.**
 
-GitMini is not designed to work as a PATH variable.
+GitMini is meant to be run inside an activated virtual environment -- it doesn’t add itself to PATH globally.
 
-1. Create and activate virtual environment
+1. Navigate into your desired directory, then create and activate virtual environment
    
 ```
+cd project-root
 python -m venv .venv
 .\.venv\Scripts\activate
 ```
@@ -38,26 +62,52 @@ python -m venv .venv
 pip install gitmini
 ```
 
-Installation done!
 
-## 📚 Usage
+3. Initialize a GitMini repository.
 
+```
 gitmini init
+```
 
-gitmini add file.txt
+This command will generate the repository (.gitmini/), and the .gitmini-ignore file
 
+4. **Ensure that your virtual environment file is ignored** by adding it to the .gitmini-ignore file.
+
+   *If you do not do this, GitMini will track your venv, and the program could break.*
+
+   ```
+   # Within .gitmini-ignore, type the following:
+   <your-virtual-environment>/
+   ```
+
+5. Create project files/folders as you please, then stage your changes.
+
+*Any of the following commands can be used:*
+```
+# To add a specific file or folder:
+gitmini add <file> <folder>
+
+# To add all files in the repo: 
+gitmini add .
+```
+
+6. Make your first commit!
+
+```
 gitmini commit -m "Initial commit"
+```
 
-gitmini log
+And you're done! You now can freely use GitMini to track your files.
 
-gitmini checkout <commit-hash or branch-name>
-
-gitmini branch <new-branch>     (or, just leave without <new-branch> to see current branch)
+And just like Git, you can make a new `branch`, `checkout` to them, and view the commit `log`.
 
 ## 👤 Author
+
 James David Furtado
 
-LinkedIn : https://www.linkedin.com/in/james-furtado/
+jamesdfurtado@gmail.com
+
+https://www.linkedin.com/in/james-furtado/
 
 ## 📄 License
 MIT License. See LICENSE file for details.
