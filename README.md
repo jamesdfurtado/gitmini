@@ -21,10 +21,24 @@ This project has been uploaded to **PyPI**! Find the link here: https://pypi.org
 
 ## 📦 Installation
 
+**Make sure to create and activate a python virtual environment before doing this.**
+
+GitMini is not designed to work as a PATH variable.
+
+1. Create and activate virtual environment
+   
+```
+python -m venv .venv
+.\.venv\Scripts\activate
+```
+
+2. Install 'gitmini' via pip
+
 ```
 pip install gitmini
 ```
 
+Installation done!
 
 ## 📚 Usage
 
