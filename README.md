@@ -5,11 +5,21 @@
 
 **GitMini** is a lightweight, minimal version control system built from scratch in Python. It replicates core non-remote Git commands like `init`, `add`, `commit`, `log`, `checkout`, and `branch`.
 
-This project has been uploaded to **PyPI**! Find the link here: https://pypi.org/project/gitmini/
+⭐ This project has been uploaded to **PyPI**! Find the link here: https://pypi.org/project/gitmini/
 
 ---
 
-## Demo
+## 💪 Motivation
+* Exercise in-depth DSA and OOP practices.
+* Demystify Git and learn safe Version Control principles.
+* Deploy a real-world package to PyPI adhering to PEP standards.
+* Practice safe SDLC methods and continuously test during development.
+* Build a CLI tool from scratch.
+* Learn to efficiently store and search data.
+
+---
+
+## 🎥 Demo
 
 🧱 Core Workflow (init, add, commit, .gitmini-ignore)
 * Initializing a repository
