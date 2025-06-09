@@ -3,7 +3,7 @@
 ![PyPI](https://img.shields.io/pypi/v/gitmini)
 ![License](https://img.shields.io/github/license/jamesdfurtado/gitmini)
 
-**GitMini** is a lightweight, minimal version control system built from scratch in Python. It replicates core non-remote Git commands like `init`, `add`, `commit`, `log`, `checkout`, and `branch`.
+**GitMini** is a lightweight Version Control System built from scratch in Python. It replicates core non-remote Git commands like `init`, `add`, `commit`, `log`, `checkout`, and `branch`.
 
 ⭐ This project has been uploaded to **PyPI**! Find the link here: https://pypi.org/project/gitmini/
 
@@ -27,7 +27,7 @@
 * Comitting files
 * .gitmini-ignore support
 
-(gif goes here)
+(gif to be added here)
 
 
 🌿 Branching Workflow (log, branch, checkout)
@@ -35,7 +35,7 @@
 * Viewing current branch, creating new branch
 * Checkout to branches and past commits
 
-(gif goes here)
+(gif to be added here)
 
 ---
 
@@ -54,11 +54,11 @@
 
 ## 📦 Installation and Usage
 
-**Make sure to create and activate a python virtual environment before doing this.**
+**Make sure to create and activate a Python virtual environment before anything.**
 
 GitMini is meant to be run inside an activated virtual environment -- it doesn’t add itself to PATH globally.
 
-1. Navigate into your desired directory, then create and activate virtual environment
+1. Navigate into your desired directory, then create & activate your virtual environment
    
 ```
 cd project-root
@@ -71,7 +71,6 @@ python -m venv .venv
 ```
 pip install gitmini
 ```
-
 
 3. Initialize a GitMini repository.
 
@@ -107,7 +106,7 @@ gitmini add .
 gitmini commit -m "Initial commit"
 ```
 
-And you're done! You now can freely use GitMini to track your files.
+And you're done! You can now freely use GitMini to track your files.
 
 And just like Git, you can make a new `branch`, `checkout` to them, and view the commit `log`.
 
