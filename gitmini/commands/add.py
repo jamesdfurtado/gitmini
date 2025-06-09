@@ -6,7 +6,6 @@ from gitmini.classes.Blob import Blob
 from gitmini.classes.Index import Index
 from gitmini.classes.Ignore import Ignore
 
-
 def handle_add(args):
     """
     Stages newly added, changed, or deleted files.
@@ -22,33 +21,38 @@ def handle_add(args):
         print("Nothing specified, nothing added.")
         sys.exit(1)
 
-    # Files that could be possible be staged
+    # Add all changed files with 'gitmini add .'
     to_stage = []
-    if len(targets) == 1 and targets[0] == ".":
-        for root, dirs, files in os.walk(repo_root):
-            if ".gitmini" in dirs:
-                dirs.remove(".gitmini")
+    for t in targets:
+        abs_t = os.path.abspath(t if os.path.isabs(t) else os.path.join(os.getcwd(), t))
+
+        if not is_within_repo(repo_root, abs_t):
+            print(f"fatal: path '{t}' is outside repository", file=sys.stderr)
+            continue
+
+        if os.path.isdir(abs_t):
+            for root, dirs, files in os.walk(abs_t):
+                if ".gitmini" in dirs:
+                    dirs.remove(".gitmini")
                 for fname in files:
-                    rel = os.path.relpath(os.path.join(root, fname), repo_root)
+                    abs_file = os.path.join(root, fname)
+                    if not is_within_repo(repo_root, abs_file):
+                        continue
+                    rel = os.path.relpath(abs_file, repo_root)
+                    if rel.startswith(".gitmini" + os.sep) or rel == ".gitmini":
+                        continue
                     if ignore.should_ignore(rel):
                         continue
                     to_stage.append(rel)
-    else:
-        for t in targets:
-            abs_t = os.path.join(repo_root, t)
-            if os.path.isdir(abs_t):
-                for root, dirs, files in os.walk(abs_t):
-                    if ".gitmini" in dirs:
-                        dirs.remove(".gitmini")
-                    for fname in files:
-                        rel = os.path.relpath(os.path.join(root, fname), repo_root)
-                        if ignore.should_ignore(rel):
-                            continue
-                        to_stage.append(rel)
-            elif os.path.isfile(abs_t):
-                to_stage.append(os.path.relpath(abs_t, repo_root))
-            else:
-                print(f"warning: pathspec '{t}' did not match any files", file=sys.stderr)
+        elif os.path.isfile(abs_t):
+            rel = os.path.relpath(abs_t, repo_root)
+            if rel.startswith(".gitmini" + os.sep) or rel == ".gitmini":
+                continue
+            if ignore.should_ignore(rel):
+                continue
+            to_stage.append(rel)
+        else:
+            print(f"warning: pathspec '{t}' did not match any files", file=sys.stderr)
 
     changed = False
 
@@ -83,5 +87,11 @@ def handle_add(args):
         print("nothing to add")
         sys.exit(0)
 
-
     index.write()
+
+
+# Patch to ensure users cannot add files outside the repository
+def is_within_repo(repo_root, abs_path):
+    abs_repo_root = os.path.abspath(repo_root)
+    abs_target = os.path.abspath(abs_path)
+    return os.path.commonpath([abs_repo_root]) == os.path.commonpath([abs_repo_root, abs_target])

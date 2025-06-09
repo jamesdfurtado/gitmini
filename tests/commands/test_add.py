@@ -51,6 +51,6 @@ class TestAdd(GitMiniTestCase):
         self.assertIn('a.txt', indexed_paths)
         self.assertIn('b.txt', indexed_paths)
         self.assertIn(os.path.normpath('sub/c.txt'), map(os.path.normpath, indexed_paths))
-        self.assertTrue(all('.gitmini' not in path for path in indexed_paths))
+        self.assertTrue(all('.gitmini' not in path for path in indexed_paths if path != '.gitmini-ignore'))
 
 # Could add tests to ensure that .gitmini is not staged 
