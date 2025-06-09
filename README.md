@@ -83,12 +83,12 @@ This command will generate the repository (.gitmini/), and the .gitmini-ignore f
 
 4. **Ensure that your virtual environment file is ignored** by adding it to the .gitmini-ignore file.
 
-   *If you do not do this, GitMini will track your venv, and the program could break.*
+*If you do not do this, GitMini will track your venv, and the program could break.*
 
-   ```
-   # Within .gitmini-ignore, type the following:
-   <your-virtual-environment>/
-   ```
+```
+# Within .gitmini-ignore, type the following:
+<your-virtual-environment>/
+```
 
 5. Create project files/folders as you please, then stage your changes.
 
