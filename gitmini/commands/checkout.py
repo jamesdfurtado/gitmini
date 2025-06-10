@@ -71,6 +71,8 @@ def handle_checkout(args):
     new_index.entries = dict(new_raw)
     new_index.write()
 
+    if is_branch:
+        print(f"checked out to branch '{target}'")
 
 def get_tree_hash(repo, commit_hash):
     # Extracts the tree hash from a commit object

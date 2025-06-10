@@ -24,6 +24,7 @@ def handle_branch(args):
         commit_hash = HEAD(repo).get_commit()
         with open(branch_file, "w") as f:
             f.write(commit_hash)
+        print(f"successfully created new branch '{new_branch}'")
     else:
         # List branches
         head = HEAD(repo)
