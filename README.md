@@ -15,7 +15,7 @@
 * Deploy a real-world package to PyPI adhering to PEP standards.
 * Practice safe SDLC methods and continuously test during development.
 * Build a CLI tool from scratch.
-* Learn to efficiently store and search data.
+* Learn to efficiently store and search data with hashing.
 
 ---
 
