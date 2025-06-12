@@ -19,39 +19,68 @@
 
 ---
 
-## 🎥 Demo
+## 🛠️ Features & Demonstration
 
-### 🧱 Core Workflow (init, add, commit, .gitmini-ignore)
+### Initialization and Staging Files
 
-![Core Workflow](gifs/core.gif)
+* `gitmini init` - Initializes a new Gitmini repository. *(Creates .gitmini/ and .gitmini-ignore)*
+     * `.gitmini/index` is the "staging area". It contains a mapping of the files in our repo.
+     * `.gitmini/objects` is where the actual file's contents exist.
+* `gitmini add` - Stages changes *(Tracks new files, deleted files, or modifications)*
 
-* Initializing a repository
-* Staging (adding) changes
-* Comitting files
-* .gitmini-ignore support
+In the Gif, you'll see me initialize a new repository, and then stage the files.
 
-<br><br>
+Watch as the `.gitmini/` folder is populated in real-time:
 
-🌿 Branching Workflow (log, branch, checkout)
+![init/add](gifs/init_and_add.gif)
 
-![Branching Workflow](gifs/branch.gif)
+<hr style="height:1px; background-color:#ddd; border:none; margin:12px 0;" />
 
-* Checking commit logs
-* Viewing current branch, creating new branch
-* Checkout to branches and past commits
+* `gitmini commit` - Commits staged changes. *(This creates a "snapshot" of our codebase, which is useful for code versioning.)*
+     * `.gitmini/HEAD` is updated to point to the branch where the commit was made
+     * `.gitmini/refs/heads` contain each branch's most recent commit.
+ 
+In the Gif, you'll see me committing our changes.
 
----
+Watch as the `HEAD` and `main` branch pointer are updated:
 
-## 🛠️ Features
+![commit](gifs/commit.gif)
 
-- `gitmini init` – Initialize a new GitMini repository  
-- `gitmini add` – Stage changes (individual files, folders, or `.`)  
-- `gitmini commit` – Commit staged changes  
-- `gitmini log` – View commit history  
-- `gitmini checkout` – Switch between branches or restore old versions  
-- Simple `.gitmini-ignore` support  
-- Content-addressable storage using SHA-1
-- No external dependencies
+<hr style="height:1px; background-color:#ddd; border:none; margin:12px 0;" />
+
+* `gitmini branch` - Shows current branch or creates a new branch.
+     * `gitmini branch` shows what branch you're on, using the `*` symbol.
+     * `gitmini branch <branch-name>` Creates a new branch called <branch-name>.
+* `gitmini checkout <branch-name>` - Switches to the specified branch or commit.
+  
+
+In the Gif, you'll see me list the current branch, create `new-branch`, then switch to it.
+
+Watch as the `refs/heads` folder is populated with `new-branch`, and the `HEAD` file changes to point to `new-branch`:
+
+![branch_checkout](gifs/branch_checkout.gif)
+
+<hr style="height:1px; background-color:#ddd; border:none; margin:12px 0;" />
+
+* `gitmini log` - Shows history of commits
+     * These commits can be `checked out` to if you want to revert changes.
+
+In the Gif, you'll see me switch to an old commit, then return back to the most recent version.
+
+Watch as each commit's contents are loaded into the codebase:
+
+![log](gifs/log.gif)
+
+<hr style="height:1px; background-color:#ddd; border:none; margin:12px 0;" />
+
+* `.gitmini-ignore` - A list of files, folders, and filetypes to ignore from versioning.
+     * This is useful for not tracking secret files, virtual environments, etc.
+ 
+In the Gif, you'll see me add `ignore_me.py` to the `.gitmini-ignore` file.
+
+Watch as I stage files, but `ignore_me.py` is not included.
+
+![ignore](gifs/ignore.gif)
 
 ---
 
