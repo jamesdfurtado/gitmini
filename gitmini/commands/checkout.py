@@ -36,13 +36,17 @@ def handle_checkout(args):
     index = Index(repo)
     current_commit = head.get_commit()
     curr_tree = get_tree_hash(repo, current_commit)
-    tree_map = read_tree(repo, curr_tree)  # path → sha
+    curr_tree_map = read_tree(repo, curr_tree)  # path → sha
 
-    if not args.force and index.entries != tree_map:
+    if not args.force and index.entries != curr_tree_map:
         print("error: cannot switch branches with uncommitted changes")
         sys.exit(1)
 
-    clean_working_dir(repo, curr_tree)
+    # Load new tree for cleanup comparison
+    new_tree = get_tree_hash(repo, new_commit)
+    new_raw = read_tree(repo, new_tree)
+
+    clean_working_dir(repo, curr_tree_map, new_raw)
 
     # Update HEAD
     if is_branch:
@@ -53,9 +57,6 @@ def handle_checkout(args):
         print("You are in 'detached HEAD' state. Any commits you make will be orphaned unless you create a branch.")
 
     # Load file contents from the new commit's tree
-    new_tree = get_tree_hash(repo, new_commit)
-    new_raw = read_tree(repo, new_tree)
-
     for path, sha in new_raw.items():
         src = os.path.join(repo.objects_dir, sha)
         dst = os.path.join(repo.root, path)
@@ -96,9 +97,15 @@ def read_tree(repo, tree_hash):
         entries[path] = sha
     return entries
 
-def clean_working_dir(repo, tree_hash):
-    # Removes files that are not in tree from CWD
-    for path in read_tree(repo, tree_hash).keys():
-        full = os.path.join(repo.root, path)
-        if os.path.exists(full):
-            os.remove(full)
+def clean_working_dir(repo, old_tree_map, new_tree_map):
+    # Delete files tracked in old_tree_map that are not in new_tree_map
+    for path in old_tree_map:
+        if path not in new_tree_map:
+            abs_path = os.path.join(repo.root, path)
+            if os.path.exists(abs_path):
+                os.remove(abs_path)
+                # Recursively remove empty parent directories up to repo root
+                parent = os.path.dirname(abs_path)
+                while parent != repo.root and os.path.isdir(parent) and not os.listdir(parent):
+                    os.rmdir(parent)
+                    parent = os.path.dirname(parent)
