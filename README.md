@@ -15,13 +15,13 @@
 * Deploy a real-world package to PyPI adhering to PEP standards.
 * Practice safe SDLC methods and continuously test during development.
 * Build a CLI tool from scratch.
-* Learn to efficiently store and search data.
+* Learn to efficiently store and search data with hashing.
 
 ---
 
 ## 🎥 Demo
 
-🧱 Core Workflow (init, add, commit, .gitmini-ignore)
+### 🧱 Core Workflow (init, add, commit, .gitmini-ignore)
 
 ![Core Workflow](gifs/core.gif)
 
@@ -30,6 +30,7 @@
 * Comitting files
 * .gitmini-ignore support
 
+<br><br>
 
 🌿 Branching Workflow (log, branch, checkout)
 
