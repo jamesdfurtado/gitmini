@@ -21,7 +21,7 @@
 
 ## 🛠️ Features & Demonstration
 
-### Initialization and Staging Files
+### Init and Add
 
 * `gitmini init` - Initializes a new Gitmini repository. *(Creates .gitmini/ and .gitmini-ignore)*
      * `.gitmini/index` is the "staging area". It contains a mapping of the files in our repo.
@@ -36,6 +36,8 @@ Watch as the `.gitmini/` folder is populated in real-time:
 
 <hr style="height:1px; background-color:#ddd; border:none; margin:12px 0;" />
 
+### Commit
+
 * `gitmini commit` - Commits staged changes. *(This creates a "snapshot" of our codebase, which is useful for code versioning.)*
      * `.gitmini/HEAD` is updated to point to the branch where the commit was made
      * `.gitmini/refs/heads` contain each branch's most recent commit.
@@ -47,6 +49,8 @@ Watch as the `HEAD` and `main` branch pointer are updated:
 ![commit](gifs/commit.gif)
 
 <hr style="height:1px; background-color:#ddd; border:none; margin:12px 0;" />
+
+### Branch and Checkout
 
 * `gitmini branch` - Shows current branch or creates a new branch.
      * `gitmini branch` shows what branch you're on, using the `*` symbol.
@@ -62,6 +66,8 @@ Watch as the `refs/heads` folder is populated with `new-branch`, and the `HEAD` 
 
 <hr style="height:1px; background-color:#ddd; border:none; margin:12px 0;" />
 
+### Log
+
 * `gitmini log` - Shows history of commits
      * These commits can be `checked out` to if you want to revert changes.
 
@@ -72,6 +78,8 @@ Watch as each commit's contents are loaded into the codebase:
 ![log](gifs/log.gif)
 
 <hr style="height:1px; background-color:#ddd; border:none; margin:12px 0;" />
+
+### Ignore file
 
 * `.gitmini-ignore` - A list of files, folders, and filetypes to ignore from versioning.
      * This is useful for not tracking secret files, virtual environments, etc.
