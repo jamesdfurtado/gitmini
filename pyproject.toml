@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "gitmini"
-version = "0.1.4"
+version = "0.1.5"
 description = "A lightweight CLI version control system that replicates core Git commands from scratch."
 readme = "README.md"
 license = { file = "LICENSE" }
@@ -27,4 +27,4 @@ requires-python = ">=3.7"
 gitmini = "gitmini.cli:main"
 
 [tool.setuptools]
-packages = ["gitmini"]
+packages = { find = {} }
