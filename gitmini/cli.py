@@ -8,6 +8,7 @@ from gitmini.commands.checkout import handle_checkout
 from gitmini.commands.branch import handle_branch
 
 def main():
+
     # Main entry point for the GitMini CLI
     parser = argparse.ArgumentParser(
         prog='gitmini',

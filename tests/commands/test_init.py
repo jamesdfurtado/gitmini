@@ -10,6 +10,7 @@ class TestInit(GitMiniTestCase):
         self.assertIn('usage: gitmini init', result.stdout)
         self.assertIn('-h, --help', result.stdout)
 
+
     def test_success_creates_repo(self):
         """ Init creates a new GitMini repository. """
         result = self.run_gitmini(['init'])

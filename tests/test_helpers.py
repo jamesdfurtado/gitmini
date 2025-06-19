@@ -27,7 +27,7 @@ class GitMiniTestCase(unittest.TestCase):
 
         # Cleanup test_env/
         for entry in os.listdir(self.repo_dir):
-            full = os.path.join(self.repo_dir, entry)
+            full = os.path.join(self.repo_dir, entry) 
             if os.path.isdir(full):
                 shutil.rmtree(full)
             else:
@@ -37,6 +37,7 @@ class GitMiniTestCase(unittest.TestCase):
 
         if os.path.exists(GITMINI_DIR):
             shutil.rmtree(GITMINI_DIR)
+    
 
     def tearDown(self):
         # Remove .gitmini after each test
@@ -47,12 +48,16 @@ class GitMiniTestCase(unittest.TestCase):
     def run_gitmini(self, args):
         """ Runs 'gitmini' command in the test environment. """
         env = os.environ.copy()
-        env['PYTHONPATH'] = self._original_cwd  # add to project PATH
+
+        # Add path to gitmini_core so subprocess can import it
+        core_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..', 'gitmini_core'))
+        env['PYTHONPATH'] = core_path + os.pathsep + env.get('PYTHONPATH', '')
 
         return subprocess.run(
-            ['python', '-m', 'gitmini'] + args,
+            [sys.executable, '-m', 'gitmini'] + args,
             cwd=self.repo_dir,
             env=env,
             capture_output=True,
             text=True
         )
+
