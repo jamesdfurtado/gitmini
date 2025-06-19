@@ -23,6 +23,11 @@ classifiers = [
 ]
 requires-python = ">=3.7"
 
+dependencies = [
+    "gitmini-core>=0.1.0"
+]
+
+
 [project.scripts]
 gitmini = "gitmini.cli:main"
 
