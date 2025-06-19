@@ -2,8 +2,8 @@ import os
 import io
 import contextlib
 
-from gitmini.classes.Repo import Repo
-from gitmini.classes.Tree import Tree
+from gitmini_core.classes.Repo import Repo
+from gitmini_core.classes.Tree import Tree
 from tests.test_helpers import GitMiniTestCase
 
 

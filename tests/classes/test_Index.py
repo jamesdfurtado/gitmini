@@ -2,8 +2,8 @@ import os
 import io
 import contextlib
 
-from gitmini.classes.Repo import Repo
-from gitmini.classes.Index import Index
+from gitmini_core.classes.Repo import Repo
+from gitmini_core.classes.Index import Index
 from tests.test_helpers import GitMiniTestCase, GITMINI_DIR
 
 

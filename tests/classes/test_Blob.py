@@ -2,9 +2,9 @@ import os
 import io
 import contextlib
 
-from gitmini.utils import compute_sha1
-from gitmini.classes.Blob import Blob
-from gitmini.classes.Repo import Repo
+from gitmini_core.utils import compute_sha1
+from gitmini_core.classes.Blob import Blob
+from gitmini_core.classes.Repo import Repo
 from tests.test_helpers import GitMiniTestCase
 
 

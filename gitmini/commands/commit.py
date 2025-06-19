@@ -1,11 +1,11 @@
 import os
 import sys
-from gitmini.utils import find_gitmini_root
-from gitmini.classes.Repo import Repo
-from gitmini.classes.Index import Index
-from gitmini.classes.Tree import Tree
-from gitmini.classes.Commit import Commit
-from gitmini.classes.HEAD import HEAD
+from gitmini_core.utils import find_gitmini_root
+from gitmini_core.classes.Repo import Repo
+from gitmini_core.classes.Index import Index
+from gitmini_core.classes.Tree import Tree
+from gitmini_core.classes.Commit import Commit
+from gitmini_core.classes.HEAD import HEAD
 
 def handle_commit(args):
     """

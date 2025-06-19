@@ -2,7 +2,7 @@ import os
 from tests.test_helpers import GitMiniTestCase, GITMINI_DIR
 import io
 import sys
-from gitmini.utils import find_gitmini_root
+from gitmini_core.utils import find_gitmini_root
 
 
 class TestFindGitminiRoot(GitMiniTestCase):

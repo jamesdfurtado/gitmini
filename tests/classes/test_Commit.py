@@ -1,11 +1,11 @@
 import os
 import unittest
-from gitmini.classes.Commit import Commit
-from gitmini.classes.Repo import Repo
-from gitmini.classes.HEAD import HEAD
-from gitmini.classes.Index import Index
-from gitmini.classes.Tree import Tree
-from gitmini.utils import compute_sha1
+from gitmini_core.classes.Commit import Commit
+from gitmini_core.classes.Repo import Repo
+from gitmini_core.classes.HEAD import HEAD
+from gitmini_core.classes.Index import Index
+from gitmini_core.classes.Tree import Tree
+from gitmini_core.utils import compute_sha1
 from tests.test_helpers import GitMiniTestCase
 
 

@@ -1,10 +1,10 @@
 import os
 import sys
-from gitmini.utils import find_gitmini_root
-from gitmini.classes.Repo import Repo
-from gitmini.classes.Blob import Blob
-from gitmini.classes.Index import Index
-from gitmini.classes.Ignore import Ignore
+from gitmini_core.utils import find_gitmini_root
+from gitmini_core.classes.Repo import Repo
+from gitmini_core.classes.Blob import Blob
+from gitmini_core.classes.Index import Index
+from gitmini_core.classes.Ignore import Ignore
 
 def handle_add(args):
     """

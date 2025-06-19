@@ -1,8 +1,8 @@
 import os
 import unittest
 from tests.test_helpers import GitMiniTestCase, GITMINI_DIR
-from gitmini.classes.HEAD import HEAD
-from gitmini.classes.Repo import Repo
+from gitmini_core.classes.HEAD import HEAD
+from gitmini_core.classes.Repo import Repo
 
 class TestCommit(GitMiniTestCase):
     """ Ensure committing updates HEAD correctly. """

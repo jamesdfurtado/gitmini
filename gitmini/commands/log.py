@@ -1,7 +1,7 @@
 import os
-from gitmini.utils import find_gitmini_root
-from gitmini.classes.Repo import Repo
-from gitmini.classes.HEAD import HEAD
+from gitmini_core.utils import find_gitmini_root
+from gitmini_core.classes.Repo import Repo
+from gitmini_core.classes.HEAD import HEAD
 
 def handle_log(args):
     """ Show commit history for the current branch. """

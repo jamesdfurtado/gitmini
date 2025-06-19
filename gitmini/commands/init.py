@@ -1,6 +1,6 @@
 import os
 import sys
-from gitmini.classes.Repo import Repo
+from gitmini_core.classes.Repo import Repo
 
 def handle_init(args):
     """

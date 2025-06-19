@@ -1,7 +1,7 @@
 import os
 import unittest
-from gitmini.classes.HEAD import HEAD
-from gitmini.classes.Repo import Repo
+from gitmini_core.classes.HEAD import HEAD
+from gitmini_core.classes.Repo import Repo
 from tests.test_helpers import GitMiniTestCase
 
 class TestHEAD(GitMiniTestCase):

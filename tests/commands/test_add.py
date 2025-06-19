@@ -1,5 +1,5 @@
 import os
-from gitmini.utils import compute_sha1
+from gitmini_core.utils import compute_sha1
 from tests.test_helpers import GitMiniTestCase, GITMINI_DIR
 
 
