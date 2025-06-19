@@ -29,7 +29,8 @@ class HEAD:
         ref = self.get_ref()
         if ref:
             ref_path = os.path.join(self.repo.gitmini_dir, ref)
-            return open(ref_path, "r").read().strip()
+            with open(ref_path, "r") as f:
+                return f.read().strip()
         return self.value
 
     def set_ref(self, branch):
