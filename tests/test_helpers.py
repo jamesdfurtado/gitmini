@@ -10,6 +10,8 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..',
 TEST_ENV_DIR = os.path.join(os.path.dirname(__file__), 'test_env')
 GITMINI_DIR = os.path.join(TEST_ENV_DIR, '.gitmini')
 
+os.environ["GITMINI_API_URL"] = "http://localhost:8001"
+
 
 class GitMiniTestCase(unittest.TestCase):
     """
