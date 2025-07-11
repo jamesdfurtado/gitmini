@@ -6,6 +6,7 @@ from gitmini.commands.commit import handle_commit
 from gitmini.commands.log import handle_log
 from gitmini.commands.checkout import handle_checkout
 from gitmini.commands.branch import handle_branch
+from gitmini.commands.login import handle_login
 
 def main():
 
@@ -50,6 +51,10 @@ def main():
                                  description='List branches, or create one if you specify a name')
     br_p.add_argument('name', nargs='?', help='Name of new branch')
     br_p.set_defaults(func=handle_branch)
+
+    # login
+    login_p = subparsers.add_parser('login', help='Authenticate with GitMiniHub via browser')
+    login_p.set_defaults(func=handle_login)
 
     args = parser.parse_args()
     args.func(args)
