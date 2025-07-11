@@ -24,7 +24,7 @@ def handle_login(args):
 
     print("A browser window will open for you to log in or sign up.")
     try:
-        # 1. Start auth session
+        # Start auth session
         resp = httpx.post(f"{API_URL}/auth/init", timeout=10)
         resp.raise_for_status()
         data = resp.json()
@@ -34,15 +34,15 @@ def handle_login(args):
         print(f"fatal: Failed to initiate authentication: {e}", file=sys.stderr)
         sys.exit(1)
 
-    # 2. Open browser
+    # Open browser
     webbrowser.open(login_url)
     print(f"If your browser did not open, visit: {login_url}")
 
-    # 3. Poll for status
+    # Poll for status
     print("Waiting for authentication to complete...")
     start = time.time()
     while True:
-        if time.time() - start > 300:  # 5 minutes
+        if time.time() - start > 300:  # 5 minute timeout
             print("fatal: Authentication timed out. Please try again.", file=sys.stderr)
             sys.exit(1)
         try:
@@ -58,5 +58,5 @@ def handle_login(args):
                 print(f"[SUCCESS] Logged in as {username}.")
                 return
         except Exception:
-            pass  # Ignore polling errors, keep trying
+            pass  # Keep trying till it works
         time.sleep(2) 
