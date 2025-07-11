@@ -47,9 +47,10 @@ class GitMiniTestCase(unittest.TestCase):
             shutil.rmtree(GITMINI_DIR)
         os.chdir(self._original_cwd)
 
-    def run_gitmini(self, args):
+    def run_gitmini(self, args, env=None):
         """ Runs 'gitmini' command in the test environment. """
-        env = os.environ.copy()
+        if env is None:
+            env = os.environ.copy()
 
         # Add path to gitmini_core so subprocess can import it
         core_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..', 'gitmini_core'))
