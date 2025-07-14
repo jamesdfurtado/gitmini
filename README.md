@@ -9,6 +9,8 @@ I built this project to reverse-engineer how Git works under the hood — to bet
 
 > **Note:** This project is actively being expanded. The pip-installable version does not yet reflect the latest code. Core data structures have been extracted into a separate Python package, `gitmini-core`, which will serve as a shared dependency for this CLI tool and the upcoming remote server (GitMiniHub).
 
+The data structures that powers this CLI can be found here! https://github.com/jamesdfurtado/gitmini-core
+
 ⭐ This project has been uploaded to **PyPI**! Find the link here: https://pypi.org/project/gitmini/
 
 ---
