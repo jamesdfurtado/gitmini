@@ -3,9 +3,13 @@
 ![PyPI](https://img.shields.io/pypi/v/gitmini)
 ![License](https://img.shields.io/github/license/jamesdfurtado/gitmini)
 
-**GitMini** is a lightweight Version Control System built from scratch in Python. It replicates core non-remote Git commands like `init`, `add`, `commit`, `log`, `checkout`, and `branch`.
+**GitMini** is a lightweight, pip-installable CLI version control system built from scratch in Python. It supports core Git commands (`init`, `add`, `commit`, `log`, `checkout`, `branch`) and manages local repositories using content-addressable storage.
 
-**NOTE!** This project is undergoing reconstruction, so it is missing some of its original files. I plan to add remote features, and because of this, I have made the core data structures of the project into its own python package in a seperate Git repository. This package "gitmini-core" will be a dependency for the "GitMini CLI" that you're looking at, as well as the "GitMini Remote Server" (think GitMiniHub).
+I built this project to reverse-engineer how Git works under the hood — to better understand version control at the system level and challenge myself with building a real CLI tool from scratch. The goal was never just to replicate Git, but to *learn it deeply by rebuilding it*. I'm now working on GitMiniHub — a remote hosting platform using FastAPI and HTML/CSS to replicate push/pull functionality and complete the stack.
+
+> **Note:** This project is actively being expanded. The pip-installable version does not yet reflect the latest code. Core data structures have been extracted into a separate Python package, `gitmini-core`, which will serve as a shared dependency for this CLI tool and the upcoming remote server (GitMiniHub).
+
+The data structures that powers this CLI can be found here! https://github.com/jamesdfurtado/gitmini-core
 
 ⭐ This project has been uploaded to **PyPI**! Find the link here: https://pypi.org/project/gitmini/
 
