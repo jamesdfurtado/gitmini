@@ -9,6 +9,7 @@ from gitmini.commands.branch import handle_branch
 from gitmini.commands.login import handle_login
 from gitmini.commands.remote.add import handle_remote_add
 from gitmini.commands.remote.branch import handle_remote_branch
+from gitmini.commands.push import handle_push
 
 def main():
 
@@ -72,6 +73,11 @@ def main():
     remote_branch_p = remote_subparsers.add_parser('branch', help='Add a new remote branch (future feature)')
     remote_branch_p.add_argument('branch_name', help='Name of new remote branch')
     remote_branch_p.set_defaults(func=handle_remote_branch)
+
+    # push
+    push_p = subparsers.add_parser('push', help='Push local branch to remote')
+    push_p.add_argument('branch', nargs='?', help='[<local-branch>:]<remote-branch> (if omitted, sends data from current local branch to remote branch equivelant.)')
+    push_p.set_defaults(func=handle_push)
 
     args = parser.parse_args()
     args.func(args)
