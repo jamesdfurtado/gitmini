@@ -42,7 +42,7 @@ class TestLoginCommand(GitMiniTestCase):
     @mock.patch('gitmini.commands.login.httpx.get')
     @mock.patch('gitmini.commands.login.httpx.post')
     def test_full_login_flow(self, mock_post, mock_get, mock_browser):
-        """ Simulate full login flow with mock API endpoints """
+        """ Simulate full login flow with mock API endpoints. """
 
         os.makedirs(os.path.dirname(self.config_path), exist_ok=True)
         with open(self.config_path, 'w') as f:
@@ -102,6 +102,7 @@ class TestLoginCommand(GitMiniTestCase):
     @mock.patch('gitmini.commands.login.httpx.post')
     def test_polling_error_resilience(self, mock_post, mock_get, mock_browser):
         """ Should ignore polling errors and succeed once /auth/status returns 200. """
+
         os.makedirs(os.path.dirname(self.config_path), exist_ok=True)
         with open(self.config_path, 'w') as f:
             json.dump({'dummy': True}, f)
