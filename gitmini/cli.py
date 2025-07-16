@@ -7,6 +7,8 @@ from gitmini.commands.log import handle_log
 from gitmini.commands.checkout import handle_checkout
 from gitmini.commands.branch import handle_branch
 from gitmini.commands.login import handle_login
+from gitmini.commands.remote.add import handle_remote_add
+from gitmini.commands.remote.branch import handle_remote_branch
 
 def main():
 
@@ -55,6 +57,21 @@ def main():
     # login
     login_p = subparsers.add_parser('login', help='Authenticate with GitMiniHub via browser')
     login_p.set_defaults(func=handle_login)
+
+    # remote (parent command)
+    remote_p = subparsers.add_parser('remote', help='Manage remotes')
+    remote_subparsers = remote_p.add_subparsers(dest='remote_command')
+    remote_p.set_defaults(func=lambda args: remote_p.print_help())
+
+    # remote add
+    remote_add_p = remote_subparsers.add_parser('add', help='Add a new remote repository')
+    remote_add_p.add_argument('repository', help='Repository name')
+    remote_add_p.set_defaults(func=handle_remote_add)
+
+    # remote branch (future feature)
+    remote_branch_p = remote_subparsers.add_parser('branch', help='Add a new remote branch (future feature)')
+    remote_branch_p.add_argument('branch_name', help='Name of new remote branch')
+    remote_branch_p.set_defaults(func=handle_remote_branch)
 
     args = parser.parse_args()
     args.func(args)
