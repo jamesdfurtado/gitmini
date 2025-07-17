@@ -66,6 +66,25 @@ def handle_push(args):
         print(f"fatal: local branch '{local_branch}' does not exist.", file=sys.stderr)
         sys.exit(1)
 
+    # Read new_commit from local branch file
+    with open(local_branch_path, "r") as f:
+        new_commit = f.read().strip()
+    if not new_commit:
+        print(f"fatal: local branch '{local_branch}' does not have a commit.", file=sys.stderr)
+        sys.exit(1)
+
+    # Read last_known_remote_commit from remote_branches.json
+    remote_branches_path = os.path.join(repo.gitmini_dir, "refs", "remote_branches.json")
+    if not os.path.exists(remote_branches_path):
+        print(f"fatal: {remote_branches_path} not found. Please run 'gitmini remote add' first.", file=sys.stderr)
+        sys.exit(1)
+    with open(remote_branches_path, "r") as f:
+        remote_branches = json.load(f)
+    last_known_remote_commit = remote_branches.get(remote_branch)
+    if last_known_remote_commit is None:
+        print(f"fatal: remote branch '{remote_branch}' not found in remote_branches.json.", file=sys.stderr)
+        sys.exit(1)
+
     # Hash the API key
     hashed_api_key = hashlib.sha256(raw_api_key.encode()).hexdigest()
 
@@ -74,8 +93,13 @@ def handle_push(args):
         "user": username,
         "api_key": hashed_api_key,
         "repo": repo_name,
-        "branch": remote_branch
+        "branch": remote_branch,
+        "last_known_remote_commit": last_known_remote_commit,
+        "new_commit": new_commit
     }
+
+    # DEBG TOOL: Print payload for manual inspection
+    # print("DEBUG PAYLOAD:", payload)
 
     # Send API request
     try:
