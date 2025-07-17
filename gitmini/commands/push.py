@@ -98,12 +98,96 @@ def handle_push(args):
         "new_commit": new_commit
     }
 
+    # Package new_objects.tar.gz
+    import tarfile
+    objects_dir = os.path.join(repo.gitmini_dir, "objects")
+    tar_path = os.path.join(repo.gitmini_dir, "new_objects.tar.gz")
+    to_send = set()
+    visited_commits = set()
+    visited_trees = set()
+
+    def walk_commit(commit_hash):
+        if commit_hash in visited_commits:
+            return
+        visited_commits.add(commit_hash)
+        commit_path = os.path.join(objects_dir, commit_hash)
+        if not os.path.exists(commit_path):
+            print(f"fatal: commit object {commit_hash} not found.", file=sys.stderr)
+            sys.exit(1)
+        with open(commit_path, "rb") as f:
+            lines = f.read().decode(errors="ignore").splitlines()
+        tree = None
+        parent = None
+        for line in lines:
+            if line.startswith("tree "):
+                tree = line.split(" ", 1)[1].strip()
+            elif line.startswith("parent "):
+                parent = line.split(" ", 1)[1].strip()
+        to_send.add(commit_hash)
+        if tree:
+            walk_tree(tree)
+        # Stop if we reach the last known remote commit
+        if parent and parent != last_known_remote_commit:
+            walk_commit(parent)
+        # If parent is None, this is the root commit (include it, stop)
+
+    def walk_tree(tree_hash):
+        if tree_hash in visited_trees:
+            return
+        visited_trees.add(tree_hash)
+        tree_path = os.path.join(objects_dir, tree_hash)
+        if not os.path.exists(tree_path):
+            print(f"fatal: tree object {tree_hash} not found.", file=sys.stderr)
+            sys.exit(1)
+        with open(tree_path, "rb") as f:
+            lines = f.read().decode(errors="ignore").splitlines()
+        to_send.add(tree_hash)
+        for line in lines:
+            if not line:
+                continue
+            sha, path = line.split(" ", 1)
+            obj_path = os.path.join(objects_dir, sha)
+            if not os.path.exists(obj_path):
+                print(f"fatal: object {sha} referenced in tree {tree_hash} not found.", file=sys.stderr)
+                sys.exit(1)
+            # Heuristic: if file is a tree object, recurse; else, it's a blob
+            with open(obj_path, "rb") as obj_f:
+                first_line = obj_f.readline().decode(errors="ignore")
+            if first_line.startswith("tree "):
+                walk_tree(sha)
+            else:
+                to_send.add(sha)
+
+    # Walk the commit graph
+    if not last_known_remote_commit:
+        # First push: include everything reachable from new_commit
+        walk_commit(new_commit)
+    else:
+        # General case: walk back to (but not including) last_known_remote_commit
+        def walk_until(commit_hash):
+            if commit_hash == last_known_remote_commit or commit_hash in visited_commits:
+                return
+            walk_commit(commit_hash)
+        walk_until(new_commit)
+
+    # Package objects into tarball
+    with tarfile.open(tar_path, "w:gz") as tar:
+        for obj_hash in to_send:
+            obj_path = os.path.join(objects_dir, obj_hash)
+            tar.add(obj_path, arcname=obj_hash)
+    
+    # The payload is now ready.
     # DEBG TOOL: Print payload for manual inspection
     # print("DEBUG PAYLOAD:", payload)
 
-    # Send API request
+    # Send API request with tarball attached
     try:
-        resp = httpx.post(f"{API_URL}/api/remote/push", json=payload, timeout=10)
+        with open(tar_path, "rb") as tarfile_obj:
+            files = {
+                "payload": (None, json.dumps(payload), "application/json"),
+                "objects": ("new_objects.tar.gz", tarfile_obj, "application/gzip"),
+            }
+            resp = httpx.post(f"{API_URL}/api/remote/push", files=files, timeout=10)
         try:
             data = resp.json()
         except Exception:
