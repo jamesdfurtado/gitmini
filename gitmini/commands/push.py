@@ -180,11 +180,16 @@ def handle_push(args):
     # DEBG TOOL: Print payload for manual inspection
     # print("DEBUG PAYLOAD:", payload)
 
-    # Send API request with tarball attached
+    # Send API request with tarball and fields as multipart/form-data
     try:
         with open(tar_path, "rb") as tarfile_obj:
             files = {
-                "payload": (None, json.dumps(payload), "application/json"),
+                "user": (None, username),
+                "api_key": (None, hashed_api_key),
+                "repo": (None, repo_name),
+                "branch": (None, remote_branch),
+                "last_known_remote_commit": (None, last_known_remote_commit),
+                "new_commit": (None, new_commit),
                 "objects": ("new_objects.tar.gz", tarfile_obj, "application/gzip"),
             }
             resp = httpx.post(f"{API_URL}/api/remote/push", files=files, timeout=10)
