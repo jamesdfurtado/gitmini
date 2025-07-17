@@ -200,6 +200,15 @@ def handle_push(args):
         if resp.status_code == 200:
             if data and data.get("status") == "ok":
                 print(f"[SUCCESS] {data.get('message', 'Push successful.')}")
+                # Update remote_branches.json with most_recent_remote_branch_commit
+                mrrbc = data.get("most_recent_remote_branch_commit")
+                if mrrbc:
+                    remote_branches_path = os.path.join(repo.gitmini_dir, "refs", "remote_branches.json")
+                    with open(remote_branches_path, "r") as f:
+                        remote_branches = json.load(f)
+                    remote_branches[remote_branch] = mrrbc
+                    with open(remote_branches_path, "w") as f:
+                        json.dump(remote_branches, f, indent=2)
             else:
                 print(f"fatal: {data.get('message', 'Unknown error') if data else 'Unknown error'}", file=sys.stderr)
                 sys.exit(1)
