@@ -4,19 +4,13 @@
 ![License](https://img.shields.io/github/license/jamesdfurtado/gitmini)
 
 **GitMini** is a lightweight, pip-installable CLI version control system built from scratch in Python.
-It supports core Git commands:
-* `init`
-* `add`
-* `commit`
-* `log`
-* `checkout`
-* `branch`
+It supports core Git commands: `init`, `add`, `commit`, `log`, `checkout`, `branch`
 
 I built this project to: 
 * understand Git's core system architecture
 * build a CLI tool from scratch
 
-The data structures that powers this CLI can be found here! https://github.com/jamesdfurtado/gitmini-core
+The data structures that powers this CLI can be found here: https://github.com/jamesdfurtado/gitmini-core
 
 ⭐ This project has been uploaded to **PyPI**! Find the link here: https://pypi.org/project/gitmini/
 
