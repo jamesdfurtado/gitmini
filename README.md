@@ -7,8 +7,9 @@
 It supports core Git commands: `init`, `add`, `commit`, `log`, `checkout`, `branch`
 
 I built this project to: 
-* understand Git's core system architecture
-* build a CLI tool from scratch
+* understand Git's core system architecture.
+* build a CLI tool from scratch.
+* build a complex, object-oriented, modular system.
 
 The data structures that powers this CLI can be found here: https://github.com/jamesdfurtado/gitmini-core
 
